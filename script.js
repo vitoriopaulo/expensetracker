@@ -108,6 +108,17 @@ document.getElementById('save-expenses').addEventListener('click', function() {
     showFeedbackPopup("Saved successfully!"); // Show feedback pop-up
 });
 
+// Handle Logout button click
+document.getElementById('logout-button').addEventListener('click', function() {
+    // Logout logic here (if applicable)
+    showFeedbackPopup("Logged out successfully!"); // Show feedback pop-up
+    setTimeout(() => {
+        // Redirect to authentication page (first level of navigation)
+        document.getElementById('expense-section').style.display = 'none';
+        document.getElementById('auth-section').style.display = 'block';
+    }, 5000); // Redirect after 5 seconds
+});
+
 // Function to display expenses for the current month
 function displayExpenses() {
     const expenses = JSON.parse(localStorage.getItem('expenses')) || []; // Get expenses from local storage
