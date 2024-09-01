@@ -173,3 +173,51 @@ footer p {
     text-decoration: none;
     cursor: pointer;
 }
+
+/* Media Queries for Mobile Responsiveness */
+@media (max-width: 600px) {
+    .container {
+        padding: 1rem; /* Reduce padding for smaller screens */
+    }
+
+    input, button {
+        width: 100%; /* Full width for inputs and buttons */
+        padding: 0.75rem; /* Increase padding for better touch targets */
+    }
+
+    h1 {
+        font-size: 1.5rem; /* Adjust font size for headings */
+    }
+
+    h2 {
+        font-size: 1.25rem; /* Adjust font size for subheadings */
+    }
+
+    #monthly-calendar {
+        flex-direction: column; /* Stack calendar elements vertically */
+        align-items: center; /* Center align items */
+    }
+
+    #prev-month, #next-month {
+        width: 100%; /* Full width for month navigation buttons */
+        margin-bottom: 0.5rem; /* Space between buttons */
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.25rem; /* Further adjust font size for smaller screens */
+    }
+
+    h2 {
+        font-size: 1rem; /* Further adjust font size for subheadings */
+    }
+
+    input, button {
+        padding: 0.5rem; /* Reduce padding for very small screens */
+    }
+
+    .modal-content {
+        width: 90%; /* Modal width for smaller screens */
+    }
+}
