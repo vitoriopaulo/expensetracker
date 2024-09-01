@@ -39,12 +39,6 @@ h2 {
     margin-top: 1rem; /* Add space above Log In heading */
 }
 
-h3 {
-    color: #b3c300; /* Green-yellowed color for h3 elements */
-    margin-bottom: 1rem; /* Add white space below h3 */
-}
-
-/* Style for input fields */
 input {
     width: 95%; /* Set width to 95% of the container */
     padding: 0.5rem;
@@ -141,20 +135,19 @@ li {
     margin-top: 1rem; /* Add some space above the total amount */
 }
 
-ul {
-    list-style-type: none;
-    padding: 0;
+/* Footer Styles */
+footer {
+    background-color: #333; /* Match the body background color */
+    color: #b3c300; /* Green-yellowed color for footer text */
+    text-align: center; /* Center align footer text */
+    padding: 1rem; /* Padding for footer */
+    position: relative; /* Ensure it stays at the bottom */
+    width: 100%; /* Full width */
+    bottom: 0; /* Stick to the bottom */
 }
 
-li {
-    background-color: #000; /* Black background color for list items */
-    color: #b3c300; /* Green-yellowed color for text in list items */
-    padding: 0.5rem;
-    margin-bottom: 0.5rem;
-    border-radius: 4px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+footer p {
+    margin: 0; /* Remove default margin */
 }
 
 .triangle {
@@ -164,23 +157,6 @@ li {
     border-right: 5px solid transparent;
     border-top: 10px solid #b3c300; /* Green-yellowed color for triangle */
     cursor: pointer;
-}
-
-.modal {
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.8); /* Dark grey background for modal */
-}
-
-/* Modal Styles */
-.modal-content {
-    width: 95%; /* Set modal content width to 96% */
-    margin: 0 auto; /* Center the modal content */
 }
 
 .close {
@@ -195,67 +171,4 @@ li {
     color: white;
     text-decoration: none;
     cursor: pointer;
-}
-
-/* Modal Button Styles */
-.modal-buttons {
-    display: flex;
-    flex-direction: column; /* Arrange buttons in a column */
-    gap: 10px; /* Add space between buttons */
-}
-
-/* Monthly Calendar Section Styles */
-#monthly-calendar {
-    display: flex;
-    justify-content: space-between; /* Align buttons to the left and right */
-    align-items: center; /* Center align items vertically */
-    width: 96%; /* Set width to 96% of the container */
-    margin: 0 auto 1rem; /* Center the calendar and add space below */
-}
-
-#prev-month, #next-month {
-    width: auto; /* Set width to auto for original size */
-    background-color: #b3c300; /* Green-yellowed color for buttons */
-    color: black; /* Black text color for buttons */
-    padding: 0.5rem 1rem; /* Padding for buttons */
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-
-/* Expense List Styles */
-#expense-list {
-    width: 96%; /* Set width to 96% of the container */
-    margin: 0 auto; /* Center the expense list */
-    list-style-type: none; /* Remove default list styling */
-    padding: 0; /* Remove default padding */
-}
-
-/* Amount Span Styles */
-.amount {
-    color: #ccc; /* Off-white color for the amount text */
-}
-
-
-/* Total Amount Styles */
-#total-amount {
-    color: #b3c300; /* Set the total amount text color */
-    font-weight: bold; /* Make total amount text bold */
-    margin-top: 1rem; /* Add some space above the total amount */
-}
-
-/* Footer Styles */
-footer {
-    background-color: #333; /* Match the body background color */
-    color: #b3c300; /* Green-yellowed color for footer text */
-    text-align: center; /* Center align footer text */
-    padding: 1rem; /* Padding for footer */
-    position: relative; /* Ensure it stays at the bottom */
-    width: 100%; /* Full width */
-    bottom: 0; /* Stick to the bottom */
-}
-
-footer p {
-    margin: 0; /* Remove default margin */
 }

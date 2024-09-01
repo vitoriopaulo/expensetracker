@@ -56,46 +56,19 @@ function initializeMonthlyCalendar() {
 function displayCurrentMonth() {
     document.getElementById('current-month').textContent = months[currentMonthIndex];
     displayExpenses(); // Display expenses for the current month
+
+    // Handle previous month button click
+    document.getElementById('prev-month').addEventListener('click', function() {
+        currentMonthIndex = (currentMonthIndex - 1 + 12) % 12; // Go to previous month
+        displayCurrentMonth();
+    });
+
+    // Handle next month button click
+    document.getElementById('next-month').addEventListener('click', function() {
+        currentMonthIndex = (currentMonthIndex + 1) % 12; // Go to next month
+        displayCurrentMonth();
+    });
 }
-
-// Handle previous month button click
-document.getElementById('prev-month').addEventListener('click', function() {
-    currentMonthIndex = (currentMonthIndex - 1 + 12) % 12; // Go to previous month
-    displayCurrentMonth();
-});
-
-// Handle next month button click
-document.getElementById('next-month').addEventListener('click', function() {
-    currentMonthIndex = (currentMonthIndex + 1) % 12; // Go to next month
-    displayCurrentMonth();
-});
-
-// Handle Expense Submission
-document.getElementById('expense-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const expenseName = document.getElementById('expense-name').value;
-    const expenseAmount = document.getElementById('expense-amount').value;
-
-    // Create an expense object
-    const expense = {
-        name: expenseName,
-        amount: parseFloat(expenseAmount),
-        month: currentMonthIndex // Store the month of the expense
-    };
-
-    // Get existing expenses from local storage or initialize an empty array
-    const expenses = JSON.parse(localStorage.getItem('expenses')) || [];
-    expenses.push(expense); // Add new expense to the array
-
-    // Save updated expenses to local storage
-    localStorage.setItem('expenses', JSON.stringify(expenses));
-
-    // Reset the form
-    document.getElementById('expense-form').reset();
-
-    // Update the expense list display
-    displayCurrentMonth();
-});
 
 // Handle SAVE button click
 document.getElementById('save-expenses').addEventListener('click', function() {
@@ -104,7 +77,7 @@ document.getElementById('save-expenses').addEventListener('click', function() {
 
 // Function to display expenses for the current month
 function displayExpenses() {
-    const expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+    const expenses = JSON.parse(localStorage.getItem('expenses')) || []; // Get expenses from local storage
     const expenseList = document.getElementById('expense-list');
     expenseList.innerHTML = ''; // Clear existing list
 
@@ -117,18 +90,18 @@ function displayExpenses() {
     currentMonthExpenses.forEach((expense, index) => {
         const li = document.createElement('li');
         li.textContent = `${expense.name}: `; // Set the text content for the expense name
+
         const amountSpan = document.createElement('span'); // Create a span for the amount
         amountSpan.textContent = `$${expense.amount.toFixed(2)}`; // Set the amount text
         li.appendChild(amountSpan); // Append the amount span to the list item
-        
+
         // Create triangle icon for options
         const triangle = document.createElement('div');
         triangle.className = 'triangle';
         triangle.onclick = function() {
             openUpdateModal(expense, index);
         };
-        
-        li.appendChild(triangle);
+        li.appendChild(triangle); // Append the triangle icon to the list item
         expenseList.appendChild(li);
     });
 
@@ -153,6 +126,8 @@ function openUpdateModal(expense, index) {
             expense.amount += amountToAdd;
             updateExpense(index, expense);
             modal.style.display = 'none'; // Close modal
+        } else {
+            console.error('Invalid amount to add:', updateAmountInput.value); // Debugging
         }
     };
 
@@ -162,6 +137,8 @@ function openUpdateModal(expense, index) {
             expense.amount -= amountToSubtract;
             updateExpense(index, expense);
             modal.style.display = 'none'; // Close modal
+        } else {
+            console.error('Invalid amount to subtract:', updateAmountInput.value); // Debugging
         }
     };
 
@@ -177,6 +154,8 @@ function openUpdateModal(expense, index) {
             expense.amount = newAmount;
             updateExpense(index, expense);
             modal.style.display = 'none'; // Close modal
+        } else {
+            console.error('Invalid new amount:', updateAmountInput.value); // Debugging
         }
     };
 
@@ -193,7 +172,7 @@ function openUpdateModal(expense, index) {
 
 // Update expense in local storage and refresh display
 function updateExpense(index, updatedExpense) {
-    const expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+    const expenses = JSON.parse(localStorage.getItem('expenses')) || []; // Get expenses from local storage
     if (updatedExpense.month === currentMonthIndex) {
         expenses[index] = updatedExpense; // Update the specific expense
     }
