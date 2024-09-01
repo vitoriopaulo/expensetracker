@@ -57,17 +57,30 @@ function displayCurrentMonth() {
     document.getElementById('current-month').textContent = months[currentMonthIndex];
     displayExpenses(); // Display expenses for the current month
 
-    // Handle previous month button click
-    document.getElementById('prev-month').addEventListener('click', function() {
-        currentMonthIndex = (currentMonthIndex - 1 + 12) % 12; // Go to previous month
-        displayCurrentMonth();
-    });
+    // Remove existing event listeners to prevent duplication
+    const prevMonthButton = document.getElementById('prev-month');
+    const nextMonthButton = document.getElementById('next-month');
 
-    // Handle next month button click
-    document.getElementById('next-month').addEventListener('click', function() {
-        currentMonthIndex = (currentMonthIndex + 1) % 12; // Go to next month
-        displayCurrentMonth();
-    });
+    prevMonthButton.removeEventListener('click', handlePrevMonth);
+    nextMonthButton.removeEventListener('click', handleNextMonth);
+
+    // Add new event listeners
+    prevMonthButton.addEventListener('click', handlePrevMonth);
+    nextMonthButton.addEventListener('click', handleNextMonth);
+}
+
+// Handle previous month button click
+function handlePrevMonth() {
+    currentMonthIndex = (currentMonthIndex - 1 + 12) % 12; // Go to previous month
+    console.log('Current Month Index (Prev):', currentMonthIndex); // Debugging
+    displayCurrentMonth();
+}
+
+// Handle next month button click
+function handleNextMonth() {
+    currentMonthIndex = (currentMonthIndex + 1) % 12; // Go to next month
+    console.log('Current Month Index (Next):', currentMonthIndex); // Debugging
+    displayCurrentMonth();
 }
 
 // Handle SAVE button click
@@ -78,12 +91,13 @@ document.getElementById('save-expenses').addEventListener('click', function() {
 // Function to display expenses for the current month
 function displayExpenses() {
     const expenses = JSON.parse(localStorage.getItem('expenses')) || []; // Get expenses from local storage
+    console.log('Expenses:', expenses); // Debugging: Check expenses in console
     const expenseList = document.getElementById('expense-list');
     expenseList.innerHTML = ''; // Clear existing list
 
     // Initialize default expenses for the current month
     const currentMonthExpenses = defaultExpenses.map(item => {
-        const existingExpense = expenses.find(exp => exp.name === item.name && exp.month === currentMonthIndex);
+        const existingExpense = expenses.find(exp => exp && exp.name === item.name && exp.month === currentMonthIndex);
         return existingExpense ? existingExpense : { ...item, month: currentMonthIndex, amount: 0 }; // Ensure amount is initialized
     });
 
