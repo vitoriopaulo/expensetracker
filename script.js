@@ -78,12 +78,13 @@ document.getElementById('save-expenses').addEventListener('click', function() {
 // Function to display expenses for the current month
 function displayExpenses() {
     const expenses = JSON.parse(localStorage.getItem('expenses')) || []; // Get expenses from local storage
+    console.log('Expenses:', expenses); // Debugging: Check expenses in console
     const expenseList = document.getElementById('expense-list');
     expenseList.innerHTML = ''; // Clear existing list
 
     // Initialize default expenses for the current month
     const currentMonthExpenses = defaultExpenses.map(item => {
-        const existingExpense = expenses.find(exp => exp.name === item.name && exp.month === currentMonthIndex);
+        const existingExpense = expenses.find(exp => exp && exp.name === item.name && exp.month === currentMonthIndex);
         return existingExpense ? existingExpense : { ...item, month: currentMonthIndex, amount: 0 }; // Ensure amount is initialized
     });
 

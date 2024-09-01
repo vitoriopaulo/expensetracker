@@ -66,10 +66,11 @@ button {
     margin-right: auto; /* Center the button */
 }
 
-/* Style for amount spans */
+
+/* Style for amount spans
 .amount {
-    color: #ccc; /* Off-white color for the amount text */
-}
+    color: #ccc; /* Off-white color for the amount text 
+}*/
 
 ul {
     list-style-type: none;
