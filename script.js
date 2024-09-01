@@ -23,7 +23,8 @@ document.getElementById('signup-form').addEventListener('submit', function(e) {
 
     // Save to local storage
     localStorage.setItem('user', JSON.stringify({ email, username, password }));
-    alert('User signed up successfully!');
+    showFeedbackPopup("Sign up successful!"); // Show feedback pop-up
+    resetSignupForm(); // Reset the form after showing feedback
 });
 
 // Handle Log In
@@ -34,14 +35,32 @@ document.getElementById('login-form').addEventListener('submit', function(e) {
 
     const user = JSON.parse(localStorage.getItem('user'));
     if (user && user.email === loginEmail && user.password === loginPassword) {
-        alert('Login successful!');
-        document.getElementById('auth-section').style.display = 'none'; // Hide auth section
-        document.getElementById('expense-section').style.display = 'block'; // Show expense section
-        initializeMonthlyCalendar(); // Initialize the calendar on login
+        showFeedbackPopup("Log in successful!"); // Show feedback pop-up
+        setTimeout(() => {
+            document.getElementById('auth-section').style.display = 'none'; // Hide auth section
+            document.getElementById('expense-section').style.display = 'block'; // Show expense section
+            initializeMonthlyCalendar(); // Initialize the calendar on login
+        }, 5000); // Redirect after 5 seconds
     } else {
         alert('Invalid credentials!');
     }
 });
+
+// Function to show feedback popup
+function showFeedbackPopup(message) {
+    const popup = document.getElementById('feedback-popup');
+    popup.textContent = message;
+    popup.style.display = 'block'; // Show the popup
+
+    setTimeout(() => {
+        popup.style.display = 'none'; // Hide the popup after 5 seconds
+    }, 5000);
+}
+
+// Function to reset the Sign Up form
+function resetSignupForm() {
+    document.getElementById('signup-form').reset();
+}
 
 // Initialize monthly calendar
 let currentMonthIndex = new Date().getMonth(); // Get current month index (0-11)
@@ -85,7 +104,8 @@ function handleNextMonth() {
 
 // Handle SAVE button click
 document.getElementById('save-expenses').addEventListener('click', function() {
-    alert('Expenses saved successfully!'); // Placeholder for save functionality
+    // Save expenses logic here (if applicable)
+    showFeedbackPopup("Saved successfully!"); // Show feedback pop-up
 });
 
 // Function to display expenses for the current month

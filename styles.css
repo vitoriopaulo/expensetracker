@@ -129,11 +129,13 @@ li {
 
 #current-month {
     color: #b3c300; /* Set the month text color */
+    font-weight: bold; /* Make the month text bold */
 }
 
 #total-amount {
     color: #b3c300; /* Set the total amount text color */
     margin-top: 1rem; /* Add some space above the total amount */
+    font-weight: bold; /* Make the total amount text bold */
 }
 
 /* Footer Styles */
@@ -202,6 +204,22 @@ footer p {
         width: 100%; /* Full width for month navigation buttons */
         margin-bottom: 0.5rem; /* Space between buttons */
     }
+}
+
+/* Feedback Pop-up Styles */
+.feedback-popup {
+    position: fixed;
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Adjust to center */
+    background-color: #b3c300; /* Yellow-greenish background */
+    color: #1a1a1a; /* Dark grey text color for better contrast */
+    padding: 1rem;
+    border-radius: 4px;
+    font-family: 'Raleway', sans-serif; /* Font family */
+    font-size: 1rem; /* Font size */
+    z-index: 1000; /* Ensure it appears above other elements */
+    display: none; /* Hidden by default */
 }
 
 @media (max-width: 480px) {
