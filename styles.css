@@ -1,0 +1,261 @@
+/* Reset some default styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Raleway', sans-serif; /* Primary font-family set to Raleway */
+    background-color: #333; /* Dark grey background color for body */
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center; /* Center align items */
+    height: auto; /* Change this line */
+    margin: 0;
+}
+
+h1 {
+    color: #b3c300; /* Green-yellowed color for text elements */
+    text-align: center; /* Center align the heading */
+    margin-bottom: 20px; /* Space between heading and authentication container */
+    margin-top: 20px; /* Space from the top of the browser */
+}
+
+.container {
+    background-color: #000; /* Black background color for container */
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px; /* Increase the maximum width for better visibility */
+    overflow: auto; /* Ensure container scrolls if needed */
+}
+
+/* Individual styles for elements */
+h2 {
+    color: #b3c300; /* Green-yellowed color for h2 elements */
+    margin-bottom: 1rem; /* Add white space below h2 */
+    margin-top: 1rem; /* Add space above Log In heading */
+}
+
+h3 {
+    color: #b3c300; /* Green-yellowed color for h3 elements */
+    margin-bottom: 1rem; /* Add white space below h3 */
+}
+
+/* Style for input fields */
+input {
+    width: 95%; /* Set width to 95% of the container */
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #1a1a1a; /* Almost black background color for input fields */
+    color: #b3c300; /* Green-yellowed text color for input fields */
+    display: block; /* Ensure inputs are block elements */
+    margin-left: auto; /* Center the input */
+    margin-right: auto; /* Center the input */
+}
+
+button {
+    width: 95%; /* Set width to 95% of the container */
+    background-color: #b3c300; /* Green-yellowed color for buttons */
+    color: black; /* Black text color for buttons */
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 1rem; /* Add some space between the expense list and the SAVE button */
+    display: block; /* Ensure buttons are block elements */
+    margin-left: auto; /* Center the button */
+    margin-right: auto; /* Center the button */
+}
+
+/* Style for amount spans */
+.amount {
+    color: #ccc; /* Off-white color for the amount text */
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    background-color: #000; /* Black background color for list items */
+    color: #b3c300; /* Green-yellowed color for text in list items */
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal {
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.8); /* Dark grey background for modal */
+}
+
+.modal-content {
+    background-color: #222; /* Dark grey background for modal content */
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 300px;
+    border-radius: 4px;
+}
+
+/* Monthly Calendar Section Styles */
+#monthly-calendar {
+    display: flex;
+    justify-content: space-between; /* Align buttons to the left and right */
+    align-items: center; /* Center align items vertically */
+    width: 95%; /* Set width to 95% of the container */
+    margin: 0 auto 1rem; /* Center the calendar and add space below */
+}
+
+#prev-month, #next-month {
+    width: 80px; /* Set a fixed width for the buttons */
+    background-color: #b3c300; /* Green-yellowed color for buttons */
+    color: black; /* Black text color for buttons */
+    padding: 0.5rem; /* Padding for buttons */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#current-month {
+    color: #b3c300; /* Set the month text color */
+}
+
+#total-amount {
+    color: #b3c300; /* Set the total amount text color */
+    margin-top: 1rem; /* Add some space above the total amount */
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    background-color: #000; /* Black background color for list items */
+    color: #b3c300; /* Green-yellowed color for text in list items */
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.triangle {
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 10px solid #b3c300; /* Green-yellowed color for triangle */
+    cursor: pointer;
+}
+
+.modal {
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.8); /* Dark grey background for modal */
+}
+
+/* Modal Styles */
+.modal-content {
+    width: 95%; /* Set modal content width to 96% */
+    margin: 0 auto; /* Center the modal content */
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Modal Button Styles */
+.modal-buttons {
+    display: flex;
+    flex-direction: column; /* Arrange buttons in a column */
+    gap: 10px; /* Add space between buttons */
+}
+
+/* Monthly Calendar Section Styles */
+#monthly-calendar {
+    display: flex;
+    justify-content: space-between; /* Align buttons to the left and right */
+    align-items: center; /* Center align items vertically */
+    width: 96%; /* Set width to 96% of the container */
+    margin: 0 auto 1rem; /* Center the calendar and add space below */
+}
+
+#prev-month, #next-month {
+    width: auto; /* Set width to auto for original size */
+    background-color: #b3c300; /* Green-yellowed color for buttons */
+    color: black; /* Black text color for buttons */
+    padding: 0.5rem 1rem; /* Padding for buttons */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+
+/* Expense List Styles */
+#expense-list {
+    width: 96%; /* Set width to 96% of the container */
+    margin: 0 auto; /* Center the expense list */
+    list-style-type: none; /* Remove default list styling */
+    padding: 0; /* Remove default padding */
+}
+
+/* Amount Span Styles */
+.amount {
+    color: #ccc; /* Off-white color for the amount text */
+}
+
+
+/* Total Amount Styles */
+#total-amount {
+    color: #b3c300; /* Set the total amount text color */
+    font-weight: bold; /* Make total amount text bold */
+    margin-top: 1rem; /* Add some space above the total amount */
+}
+
+/* Footer Styles */
+footer {
+    background-color: #333; /* Match the body background color */
+    color: #b3c300; /* Green-yellowed color for footer text */
+    text-align: center; /* Center align footer text */
+    padding: 1rem; /* Padding for footer */
+    position: relative; /* Ensure it stays at the bottom */
+    width: 100%; /* Full width */
+    bottom: 0; /* Stick to the bottom */
+}
+
+footer p {
+    margin: 0; /* Remove default margin */
+}
