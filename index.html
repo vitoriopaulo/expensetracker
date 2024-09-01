@@ -16,16 +16,16 @@
         <div id="auth-section">
             <h2>Sign Up</h2>
             <form id="signup-form">
-                <input type="email" id="email" placeholder="Email" required>
-                <input type="text" id="username" placeholder="Username" required>
-                <input type="password" id="password" placeholder="Password" required>
+                <input type="email" id="email" name="email" autocomplete="email" placeholder="Email" required>
+                <input type="text" id="username" name="username" autocomplete="username" placeholder="Username" required>
+                <input type="password" id="password" name="password" autocomplete="current-password" placeholder="Password" required>
                 <button type="submit">Sign Up</button>
             </form>
 
             <h2>Log In</h2>
             <form id="login-form">
-                <input type="email" id="login-email" placeholder="Email" required>
-                <input type="password" id="login-password" placeholder="Password" required>
+                <input type="email" id="login-email" name="login-email" autocomplete="email" placeholder="Email" required>
+                <input type="password" id="login-password" name="login-password" autocomplete="current-password" placeholder="Password" required>
                 <button type="submit">Log In</button>
             </form>
         </div>
