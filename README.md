@@ -13,6 +13,17 @@ The Expense Tracker was developed with a strong emphasis on accessibility and in
 - Accessibility-focused design
 - Responsive layout for mobile compatibility
 
+## Using the App
+
+You're free to use it at [Expense Tracker App](https://vitoriopaulo.github.io/expensetracker-app-project/).
+
+## Cloning the Repository
+
+To use the Expense Tracker app locally, you can clone the repository using the following command:
+
+```bash
+git clone https://github.com/VitorioPaulo/expensetracker-app-project.git
+
 ## License
 
 This application is licensed under the [MIT License](LICENSE).
