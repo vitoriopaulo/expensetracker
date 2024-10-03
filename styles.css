@@ -178,12 +178,16 @@ footer p {
 
 #expense-section {
     position: relative; /* Set position to relative to position child elements absolutely */
+    display: none; /* Hide the expense section by default */
+}
+
+.expense-section-header {
+    position: absolute;
+    top: 10px; /* Position from the top of the container */
+    right: 10px; /* Position from the right edge of the container */
 }
 
 .logout-button {
-    position: absolute;
-    top: 0.5px; /* Small space from the top of the container */
-    right: 5px; /* Small space from the right edge of the container */
     background-color: #b3c300;
     color: black;
     padding: 0.5rem 1rem;
