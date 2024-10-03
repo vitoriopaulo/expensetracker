@@ -1,17 +1,23 @@
 // Boilerplate expenses
 const defaultExpenses = [
     { name: "Rent", amount: 0 },
-    { name: "Condo fee", amount: 0 },
-    { name: "Tax property fee", amount: 0 },
+    { name: "Condo Fee", amount: 0 },
+    { name: "Property Tax", amount: 0 },
     { name: "Groceries", amount: 0 },
     { name: "Utilities", amount: 0 },
     { name: "Health Plan", amount: 0 },
     { name: "Medicines", amount: 0 },
-    { name: "Doctors appointments", amount: 0 },
+    { name: "Doctors Appointments", amount: 0 },
     { name: "Psychotherapy", amount: 0 },
-    { name: "Gym", amount: 0 },
-    { name: "Leisure", amount: 0 },
-    { name: "Others", amount: 0 },
+    { name: "Gym Membership", amount: 0 },
+    { name: "Fitness Classes", amount: 0 },
+    { name: "Dining Out", amount: 0 },
+    { name: "Movies and Events", amount: 0 },
+    { name: "Hobbies", amount: 0 },
+    { name: "Travel Expenses", amount: 0 },
+    { name: "Personal Care", amount: 0 },
+    { name: "Education", amount: 0 },
+    { name: "Miscellaneous", amount: 0 }
 ];
 
 // Handle Sign Up
@@ -44,6 +50,17 @@ document.getElementById('login-form').addEventListener('submit', function(e) {
     } else {
         alert('Invalid credentials!');
     }
+});
+
+// Handle Logout
+document.getElementById('logout-button').addEventListener('click', function() {
+    // Logout logic here (if applicable)
+    showFeedbackPopup("Logged out successfully!"); // Show feedback pop-up
+    setTimeout(() => {
+        // Redirect to authentication page (first level of navigation)
+        document.getElementById('expense-section').style.display = 'none';
+        document.getElementById('auth-section').style.display = 'block';
+    }, 5000); // Redirect after 5 seconds
 });
 
 // Function to show feedback popup
@@ -106,17 +123,6 @@ function handleNextMonth() {
 document.getElementById('save-expenses').addEventListener('click', function() {
     // Save expenses logic here (if applicable)
     showFeedbackPopup("Saved successfully!"); // Show feedback pop-up
-});
-
-// Handle Logout button click
-document.getElementById('logout-button').addEventListener('click', function() {
-    // Logout logic here (if applicable)
-    showFeedbackPopup("Logged out successfully!"); // Show feedback pop-up
-    setTimeout(() => {
-        // Redirect to authentication page (first level of navigation)
-        document.getElementById('expense-section').style.display = 'none';
-        document.getElementById('auth-section').style.display = 'block';
-    }, 5000); // Redirect after 5 seconds
 });
 
 // Function to display expenses for the current month
