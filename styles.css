@@ -52,20 +52,47 @@ input {
     margin-right: auto; /* Center the input */
 }
 
+/* General Button Styling */
 button {
-    width: 95%; /* Set width to 95% of the container */
-    background-color: #b3c300; /* Green-yellowed color for buttons */
-    color: black; /* Black text color for buttons */
+    width: 95%;
+    background-color: #b3c300;
+    color: black;
     padding: 0.5rem 1rem;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    margin-top: 1rem; /* Add some space between the expense list and the SAVE button */
-    display: block; /* Ensure buttons are block elements */
-    margin-left: auto; /* Center the button */
-    margin-right: auto; /* Center the button */
+    margin-top: 1rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    transition: transform 0.2s ease-in-out; /* Transition for hover effect */
 }
 
+/* Hover Effect */
+button:hover {
+    transform: scale(1.025); /* Slightly increase size by 2.5% */
+}
+
+/.logout-button {
+    background-color: #b3c300;
+    color: black;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    width: 95%; /* Matches the width of the Save button */
+    margin-top: 1rem; /* Space above the Log Out button */
+    margin-bottom: 30px; /* Space from the container's bottom */
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    transition: transform 0.2s ease-in-out; /* Adds hover effect animation */
+}
+
+.logout-button:hover {
+    transform: scale(1.025); /* Slight increase in size */
+}
 
 /* Style for amount spans
 .amount {
