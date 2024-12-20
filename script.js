@@ -62,13 +62,26 @@ document.getElementById('logout-button').addEventListener('click', function() {
     }, 4000); // Redirect after 4 seconds
 });
 
-// Function to show feedback popup
+// Function to show feedback popup with progress bar
 function showFeedbackPopup(message) {
     const popup = document.getElementById('feedback-popup');
-    popup.textContent = message;
-    popup.style.display = 'block'; // Show the popup
+    popup.innerHTML = `${message} <div class='progress-bar'></div>`;
+    popup.style.display = 'block';
+    popup.style.opacity = '1';
+
+    const progressBar = popup.querySelector('.progress-bar');
+    progressBar.style.width = '0';
+    progressBar.style.transition = 'width 4s linear';
+
     setTimeout(() => {
-        popup.style.display = 'none'; // Hide the popup after 4 seconds
+        progressBar.style.width = '100%';
+    }, 10);
+
+    setTimeout(() => {
+        popup.style.opacity = '0';
+        setTimeout(() => {
+            popup.style.display = 'none';
+        }, 500); // Ensure popup fades out
     }, 4000);
 }
 
