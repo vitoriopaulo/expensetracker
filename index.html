@@ -1,11 +1,10 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Manage your monthly expenses with our simple and user-friendly Expense Tracker app.">
     <title>Expense Tracker</title>
-    <meta name="description" content="Manage your monthly expenses with our simple and user-friendly Expense Tracker app.">
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,17 +17,27 @@
         <div id="auth-section" aria-labelledby="auth-heading">
             <h2 id="auth-heading">Sign Up</h2>
             <form id="signup-form" aria-label="Sign Up Form">
-                <input type="email" id="email" name="email" autocomplete="email" placeholder="Email" required aria-label="Email Address">
-                <input type="text" id="username" name="username" autocomplete="username" placeholder="Username" required aria-label="Username">
-                <input type="password" id="password" name="password" autocomplete="current-password" placeholder="Password" required aria-label="Password">
-                <button type="submit" aria-label="Submit Sign Up Form">Sign Up</button>
+                <div class="input-container">
+                    <input type="email" id="email" name="email" autocomplete="email" placeholder="Email" required aria-label="Email Address">
+                </div>
+                <div class="input-container">
+                    <input type="text" id="username" name="username" autocomplete="username" placeholder="Username" required aria-label="Username">
+                </div>
+                <div class="input-container">
+                    <input type="password" id="password" name="password" autocomplete="current-password" placeholder="Password" required aria-label="Password">
+                </div>
+                <button type="submit" class="auth-button" aria-label="Submit Sign Up Form">Sign Up</button>
             </form>
 
             <h2>Log In</h2>
             <form id="login-form" aria-label="Log In Form">
-                <input type="email" id="login-email" name="login-email" autocomplete="email" placeholder="Email" required aria-label="Email Address">
-                <input type="password" id="login-password" name="login-password" autocomplete="current-password" placeholder="Password" required aria-label="Password">
-                <button type="submit" aria-label="Submit Log In Form">Log In</button>
+                <div class="input-container">
+                    <input type="email" id="login-email" name="login-email" autocomplete="email" placeholder="Email" required aria-label="Email Address">
+                </div>
+                <div class="input-container">
+                    <input type="password" id="login-password" name="login-password" autocomplete="current-password" placeholder="Password" required aria-label="Password">
+                </div>
+                <button type="submit" class="auth-button" aria-label="Submit Log In Form">Log In</button>
             </form>
         </div>
 
@@ -37,9 +46,9 @@
 
             <!-- Monthly Calendar Section -->
             <div id="monthly-calendar" class="monthly-calendar" aria-label="Monthly Calendar Navigation">
-                <button id="prev-month" aria-label="Previous Month">&lt;</button>
+                <button id="prev-month" class="expense-button" aria-label="Previous Month">&lt;</button>
                 <span id="current-month" aria-live="polite"></span>
-                <button id="next-month" aria-label="Next Month">&gt;</button>
+                <button id="next-month" class="expense-button" aria-label="Next Month">&gt;</button>
             </div>
 
             <!-- Predefined Expenses List -->
@@ -50,10 +59,10 @@
             <p id="total-amount" aria-label="Total Amount">Total Amount: <span class="amount">$0.00</span></p>
             
             <!-- Save Button -->
-            <button type="button" id="save-expenses" aria-label="Save Expenses">SAVE</button>
+            <button type="button" id="save-expenses" class="expense-button" aria-label="Save Expenses">SAVE</button>
 
-             <!-- Log Out Button -->
-            <button type="button" id="logout-button" class="logout-button" aria-label="Log Out">Log out</button>
+            <!-- Log Out Button -->
+            <button type="button" id="logout-button" class="expense-button" aria-label="Log Out">Log out</button>
         </div>
     </div>
 
@@ -62,20 +71,22 @@
         <div class="modal-content">
             <span class="close" aria-label="Close Modal">&times;</span>
             <h2 id="update-modal-heading">Update Expense</h2>
-            <input type="number" id="update-amount" placeholder="Enter amount" step="0.01" required aria-label="Amount to Update">
+            <div class="input-container">
+                <input type="number" id="update-amount" placeholder="Enter amount" step="0.01" required aria-label="Amount to Update">
+            </div>
             <div class="modal-buttons">
-                <button id="add-amount" aria-label="Add Amount">Add Amount</button>
-                <button id="subtract-amount" aria-label="Subtract Amount">Subtract Amount</button>
-                <button id="reset-amount" aria-label="Reset Amount">Reset Amount</button>
-                <button id="enter-new-amount" aria-label="Enter New Amount">Enter New Amount</button>
+                <button id="add-amount" class="expense-button" aria-label="Add Amount">Add Amount</button>
+                <button id="subtract-amount" class="expense-button" aria-label="Subtract Amount">Subtract Amount</button>
+                <button id="reset-amount" class="expense-button" aria-label="Reset Amount">Reset Amount</button>
+                <button id="enter-new-amount" class="expense-button" aria-label="Enter New Amount">Enter New Amount</button>
             </div>
         </div>
     </div>
 
     <!-- Feedback Pop-up -->
-<div id="feedback-popup" class="feedback-popup" style="display: none;" aria-live="assertive">
-    <div class="progress-bar"></div> <!-- Added progress bar -->
-</div>
+    <div id="feedback-popup" class="feedback-popup" style="display: none;" aria-live="assertive">
+        <div class="progress-bar"></div> <!-- Progress bar for pop-ups -->
+    </div>
 
     <!-- Footer Section -->
     <footer>

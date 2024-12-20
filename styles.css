@@ -11,93 +11,74 @@ body {
     display: flex;
     flex-direction: column; /* Stack elements vertically */
     align-items: center; /* Center align items */
-    height: auto; /* Change this line */
+    height: auto;
     margin: 0;
 }
 
 h1 {
     color: #b3c300; /* Green-yellowed color for text elements */
-    text-align: center; /* Center align the heading */
-    margin-bottom: 20px; /* Space between heading and authentication container */
-    margin-top: 20px; /* Space from the top of the browser */
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
 }
 
 .container {
-    background-color: #000; /* Black background color for container */
+    background-color: #000;
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 600px; /* Increase the maximum width for better visibility */
-    overflow: auto; /* Ensure container scrolls if needed */
+    max-width: 600px;
+    overflow: auto;
 }
 
-/* Individual styles for elements */
-h2 {
-    color: #b3c300; /* Green-yellowed color for h2 elements */
-    margin-bottom: 1rem; /* Add white space below h2 */
-    margin-top: 1rem; /* Add space above Log In heading */
-}
-
-input {
-    width: 95%; /* Set width to 95% of the container */
+/* Input Styling */
+.input-container input {
+    width: 100%;
     padding: 0.5rem;
+    border: none;
+    border-bottom: 2px solid #b3c300;
+    background-color: black; /* Ensures background stays black */
+    color: #b3c300; /* Green-yellowed text */
     margin-bottom: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #1a1a1a; /* Almost black background color for input fields */
-    color: #b3c300; /* Green-yellowed text color for input fields */
-    display: block; /* Ensure inputs are block elements */
-    margin-left: auto; /* Center the input */
-    margin-right: auto; /* Center the input */
+    font-size: 1rem;
+    outline: none;
+    transition: border-bottom-width 0.3s ease-in-out, color 0.3s ease-in-out;
 }
 
-/* General Button Styling */
-button {
-    width: 95%;
+.input-container input:focus {
+    border-bottom-width: 3px;
+    color: #b3c300; /* Green-yellowed text on focus */
+}
+
+/* Button Styling */
+.auth-button, .expense-button {
+    width: 100%;
+    padding: 0.75rem 1rem;
     background-color: #b3c300;
     color: black;
-    padding: 0.5rem 1rem;
     border: none;
-    border-radius: 4px;
+    border-radius: 30px;
+    font-size: 1rem;
     cursor: pointer;
+    transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+
+.auth-button:hover, .expense-button:hover {
+    transform: scale(1.05);
+    background-color: #a6b000;
+}
+
+/* Additional spacing between buttons */
+.expense-button + .expense-button {
+    margin-top: 10px;
+}
+
+h2 {
+    color: #b3c300;
+    margin-bottom: 1rem;
     margin-top: 1rem;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    transition: transform 0.2s ease-in-out; /* Transition for hover effect */
 }
-
-/* Hover Effect */
-button:hover {
-    transform: scale(1.025); /* Slightly increase size by 2.5% */
-}
-
-/.logout-button {
-    background-color: #b3c300;
-    color: black;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    width: 95%; /* Matches the width of the Save button */
-    margin-top: 1rem; /* Space above the Log Out button */
-    margin-bottom: 30px; /* Space from the container's bottom */
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    transition: transform 0.2s ease-in-out; /* Adds hover effect animation */
-}
-
-.logout-button:hover {
-    transform: scale(1.025); /* Slight increase in size */
-}git 
-
-/* Style for amount spans
-.amount {
-    color: #ccc; /* Off-white color for the amount text 
-}*/
 
 ul {
     list-style-type: none;
@@ -105,8 +86,8 @@ ul {
 }
 
 li {
-    background-color: #000; /* Black background color for list items */
-    color: #b3c300; /* Green-yellowed color for text in list items */
+    background-color: #000;
+    color: #b3c300;
     padding: 0.5rem;
     margin-bottom: 0.5rem;
     border-radius: 4px;
@@ -123,11 +104,11 @@ li {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.8); /* Dark grey background for modal */
+    background-color: rgba(0, 0, 0, 0.8);
 }
 
 .modal-content {
-    background-color: #222; /* Dark grey background for modal content */
+    background-color: #222;
     margin: 15% auto;
     padding: 20px;
     border: 1px solid #888;
@@ -135,49 +116,59 @@ li {
     border-radius: 4px;
 }
 
+/* Modal Buttons Spacing */
+.modal-buttons button + button {
+    margin-top: 10px;
+}
+
 /* Monthly Calendar Section Styles */
 #monthly-calendar {
     display: flex;
-    justify-content: space-between; /* Align buttons to the left and right */
-    align-items: center; /* Center align items vertically */
-    width: 95%; /* Set width to 95% of the container */
-    margin: 0 auto 1rem; /* Center the calendar and add space below */
+    justify-content: space-between;
+    align-items: center;
+    width: 95%;
+    margin: 0 auto 1rem;
 }
 
 #prev-month, #next-month {
-    width: 80px; /* Set a fixed width for the buttons */
-    background-color: #b3c300; /* Green-yellowed color for buttons */
-    color: black; /* Black text color for buttons */
-    padding: 0.5rem; /* Padding for buttons */
+    width: 80px;
+    background-color: #b3c300;
+    color: black;
+    padding: 0.5rem;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+#prev-month:hover, #next-month:hover {
+    transform: scale(1.05);
 }
 
 #current-month {
-    color: #b3c300; /* Set the month text color */
-    font-weight: bold; /* Make the month text bold */
+    color: #b3c300;
+    font-weight: bold;
 }
 
 #total-amount {
-    color: #b3c300; /* Set the total amount text color */
-    margin-top: 1rem; /* Add some space above the total amount */
-    font-weight: bold; /* Make the total amount text bold */
+    color: #b3c300;
+    margin-top: 1rem;
+    font-weight: bold;
 }
 
 /* Footer Styles */
 footer {
-    background-color: #333; /* Match the body background color */
-    color: #b3c300; /* Green-yellowed color for footer text */
-    text-align: center; /* Center align footer text */
-    padding: 1rem; /* Padding for footer */
-    position: relative; /* Ensure it stays at the bottom */
-    width: 100%; /* Full width */
-    bottom: 0; /* Stick to the bottom */
+    background-color: #333;
+    color: #b3c300;
+    text-align: center;
+    padding: 1rem;
+    position: relative;
+    width: 100%;
+    bottom: 0;
 }
 
 footer p {
-    margin: 0; /* Remove default margin */
+    margin: 0;
 }
 
 .triangle {
@@ -185,7 +176,7 @@ footer p {
     height: 0;
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
-    border-top: 10px solid #b3c300; /* Green-yellowed color for triangle */
+    border-top: 10px solid #b3c300;
     cursor: pointer;
 }
 
@@ -204,113 +195,52 @@ footer p {
 }
 
 #expense-section {
-    position: relative; /* Set position to relative to position child elements absolutely */
-    display: none; /* Hide the expense section by default */
+    position: relative;
+    display: none;
 }
 
 .expense-section-header {
-    position: absolute;
-    top: 10px; /* Position from the top of the container */
-    right: 10px; /* Position from the right edge of the container */
-}
-
-.logout-button {
-    background-color: #b3c300;
-    color: black;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    width: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 /* Feedback Pop-up Styles */
 .feedback-popup {
     position: fixed;
-    top: 50%; /* Center vertically */
-    left: 50%; /* Center horizontally */
+    top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #b3c300; /* Yellow-greenish background */
-    color: #1a1a1a; /* Dark grey text color for better contrast */
+    background-color: #b3c300;
+    color: #1a1a1a;
     padding: 1rem;
     border-radius: 4px;
     font-family: 'Raleway', sans-serif;
     font-size: 1rem;
     z-index: 1000;
-    display: none; /* Hidden by default */
-    opacity: 0; /* Initially transparent */
-    transition: opacity 0.5s ease-in-out; /* Fade-in/out transition */
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
 }
 
 /* Progress Bar Styles */
 .progress-bar {
     height: 3px;
-    background-color: #444; /* Dark grey color for the bar */
-    width: 0%; /* Start with 0% width */
-    transition: width 4s linear; /* Animate width over 4 seconds */
-}
-
-/* Media Queries for Mobile Responsiveness */
-@media (max-width: 600px) {
-    .container {
-        padding: 1rem; /* Reduce padding for smaller screens */
-    }
-
-    input, button {
-        width: 100%; /* Full width for inputs and buttons */
-        padding: 0.75rem; /* Increase padding for better touch targets */
-    }
-
-    h1 {
-        font-size: 1.5rem; /* Adjust font size for headings */
-    }
-
-    h2 {
-        font-size: 1.25rem; /* Adjust font size for subheadings */
-    }
-
-    #monthly-calendar {
-        flex-direction: column; /* Stack calendar elements vertically */
-        align-items: center; /* Center align items */
-    }
-
-    #prev-month, #next-month {
-        width: 100%; /* Full width for month navigation buttons */
-        margin-bottom: 0.5rem; /* Space between buttons */
-    }
-}
-
-/* Feedback Pop-up Styles */
-.feedback-popup {
-    position: fixed;
-    top: 50%; /* Center vertically */
-    left: 50%; /* Center horizontally */
-    transform: translate(-50%, -50%); /* Adjust to center */
-    background-color: #b3c300; /* Yellow-greenish background */
-    color: #1a1a1a; /* Dark grey text color for better contrast */
-    padding: 1rem;
-    border-radius: 4px;
-    font-family: 'Raleway', sans-serif; /* Font family */
-    font-size: 1rem; /* Font size */
-    z-index: 1000; /* Ensure it appears above other elements */
-    display: none; /* Hidden by default */
+    background-color: #444;
+    width: 0%;
+    transition: width 4s linear;
 }
 
 @media (max-width: 480px) {
     h1 {
-        font-size: 1.25rem; /* Further adjust font size for smaller screens */
+        font-size: 1.25rem;
     }
 
     h2 {
-        font-size: 1rem; /* Further adjust font size for subheadings */
-    }
-
-    input, button {
-        padding: 0.5rem; /* Reduce padding for very small screens */
+        font-size: 1rem;
     }
 
     .modal-content {
-        width: 90%; /* Modal width for smaller screens */
+        width: 90%;
     }
 }
