@@ -22,6 +22,7 @@ const defaultExpenses = [
 
 // Global variables
 let monthlyBudget = 0;
+let expensePieChart;
 
 // Handle Sign Up
 document.getElementById('signup-form').addEventListener('submit', function (e) {
@@ -59,6 +60,7 @@ document.getElementById('login-form').addEventListener('submit', function (e) {
                 initializeMonthlyCalendar();
                 displayBudget();
                 displayExpenses(); // Ensure expenses are displayed on login
+                renderExpenseChart();
             }, 4000);
         } else {
             showFeedbackPopup("Invalid credentials. Try again!");
@@ -117,6 +119,7 @@ function displayCurrentMonth() {
     document.getElementById('current-month').textContent = months[currentMonthIndex];
     displayExpenses();
     displayBudget();
+    renderExpenseChart();
 }
 
 // Function to display the budget
@@ -188,6 +191,43 @@ function displayExpenses() {
 
     const totalAmount = currentMonthExpenses.reduce((total, expense) => total + expense.amount, 0);
     document.getElementById('total-amount').textContent = `Total Amount: $${totalAmount.toFixed(2)}`;
+}
+
+function renderExpenseChart() {
+    const ctx = document.getElementById('expense-pie-chart').getContext('2d');
+
+    const expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+    const currentMonthExpenses = expenses.filter(exp => exp && exp.month === currentMonthIndex);
+
+    const labels = currentMonthExpenses.map(exp => exp.name);
+    const data = currentMonthExpenses.map(exp => exp.amount);
+
+    // Destroy previous chart instance to avoid overlap
+    if (expensePieChart) {
+        expensePieChart.destroy();
+    }
+
+    // Render new chart
+    expensePieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#FF6347'
+                ]
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
+            }
+        }
+    });
 }
 
 // Open modal for updating expense
