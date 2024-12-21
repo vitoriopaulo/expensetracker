@@ -22,6 +22,11 @@ h1 {
     margin-top: 20px;
 }
 
+/* Apply neon styling for the desired elements */
+h1, #expense-section h2, #total-amount {
+    color: #b3c300; /* Neon blue */
+}
+
 .container {
     background-color: #000;
     padding: 2rem;
@@ -64,8 +69,12 @@ h1 {
     transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
 }
 
+.expense-button {
+    margin-top: 15px; /* Added margin-top for adequate spacing */
+}
+
 .auth-button:hover, .expense-button:hover {
-    transform: scale(1.05);
+    transform: scale(1.01);
     background-color: #a6b000;
 }
 
@@ -229,6 +238,34 @@ footer p {
     background-color: #444;
     width: 0%;
     transition: width 4s linear;
+}
+
+/* Footer and Social Icons */
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+    padding-bottom: 20px;
+}
+
+.social-icon {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    background-color: #444; /* Light gray background */
+    border-radius: 50%; /* Rounded shape */
+    color: #fff; /* Text/icon color */
+    font-size: 1rem;
+    line-height: 40px; /* Align text/icon vertically */
+    text-align: center; /* Center content */
+    text-decoration: none; /* Remove underline */
+    transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+
+.social-icon:hover {
+    transform: scale(1.01); /* Hover effect with 1% scaling */
+    background-color: #b3c300; /* Change to greenish-yellow on hover */
 }
 
 @media (max-width: 480px) {
