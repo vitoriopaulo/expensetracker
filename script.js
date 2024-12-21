@@ -21,37 +21,46 @@ const defaultExpenses = [
 ];
 
 // Handle Sign Up
-document.getElementById('signup-form').addEventListener('submit', function(e) {
-    e.preventDefault();
+document.getElementById('signup-form').addEventListener('submit', function (e) {
+    e.preventDefault(); // Prevent form from refreshing the page
     const email = document.getElementById('email').value;
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
 
-    // Save to local storage
-    localStorage.setItem('user', JSON.stringify({ email, username, password }));
-    showFeedbackPopup("Sign up successful!"); // Show feedback pop-up
-    resetSignupForm(); // Reset the form after showing feedback
+    // Check if passwords match
+    if (password === confirmPassword) {
+        // Save user details to local storage
+        localStorage.setItem('user', JSON.stringify({ email, username, password }));
+        showFeedbackPopup("Sign-Up successful!"); // Show success message
+        resetSignupForm(); // Reset the form after successful sign-up
+    } else {
+        showFeedbackPopup("Passwords don't match. Try again!"); // Show error message
+    }
 });
 
 // Handle Log In
-document.getElementById('login-form').addEventListener('submit', function(e) {
-    e.preventDefault();
+document.getElementById('login-form').addEventListener('submit', function (e) {
+    e.preventDefault(); // Prevent form from refreshing the page
     const loginEmail = document.getElementById('login-email').value;
     const loginPassword = document.getElementById('login-password').value;
 
+    // Retrieve user data from local storage
     const user = JSON.parse(localStorage.getItem('user'));
-    
+
+    // Validate credentials
     if (user && user.email === loginEmail && user.password === loginPassword) {
-        showFeedbackPopup("Log in successful!"); // Show feedback pop-up
+        showFeedbackPopup("Successfully logged in!"); // Success message
         setTimeout(() => {
             document.getElementById('auth-section').style.display = 'none'; // Hide auth section
             document.getElementById('expense-section').style.display = 'block'; // Show expense section
             initializeMonthlyCalendar(); // Initialize the calendar on login
         }, 4000); // Redirect after 4 seconds
     } else {
-        alert('Invalid credentials!');
+        showFeedbackPopup("Invalid credentials. Try again!"); // Error message
     }
 });
+
 
 // Handle Logout
 document.getElementById('logout-button').addEventListener('click', function() {
