@@ -323,6 +323,40 @@ footer p {
     background-color: #b3c300; /* Change to greenish-yellow on hover */
 }
 
+#charts-section {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #000;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    color: #b3c300;
+    text-align: center;
+}
+
+/* Legend Customization */
+.chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.chart-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    color: #b3c300;
+}
+
+.chart-legend-item .legend-color {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+}
+
+
 @media (max-width: 480px) {
     h1 {
         font-size: 1.25rem;
