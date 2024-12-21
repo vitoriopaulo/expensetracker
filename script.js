@@ -20,65 +20,61 @@ const defaultExpenses = [
     { name: "Miscellaneous", amount: 0 }
 ];
 
+// Global variables
+let monthlyBudget = 0;
+
 // Handle Sign Up
-document.getElementById('signup-form').addEventListener('submit', function(e) {
+document.getElementById('signup-form').addEventListener('submit', function (e) {
     e.preventDefault();
     const email = document.getElementById('email').value;
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirm-password').value; // Get confirm password input
+    const confirmPassword = document.getElementById('confirm-password').value;
 
     if (password !== confirmPassword) {
-        showFeedbackPopup("Passwords don't match. Try again!"); // Show feedback for mismatch
-        return; // Exit the function if passwords don't match
+        showFeedbackPopup("Passwords don't match. Try again!");
+        return;
     }
 
-    // Encrypt the password
     const encryptedPassword = CryptoJS.AES.encrypt(password, 'secret-key').toString();
-
-    // Save to local storage
     localStorage.setItem('user', JSON.stringify({ email, username, password: encryptedPassword }));
-    showFeedbackPopup("Sign up successful!"); // Show feedback for success
-    resetSignupForm(); // Reset the form
+    showFeedbackPopup("Sign up successful!");
+    resetSignupForm();
 });
 
-
 // Handle Log In
-document.getElementById('login-form').addEventListener('submit', function(e) {
+document.getElementById('login-form').addEventListener('submit', function (e) {
     e.preventDefault();
     const loginEmail = document.getElementById('login-email').value;
     const loginPassword = document.getElementById('login-password').value;
-
     const user = JSON.parse(localStorage.getItem('user'));
 
     if (user && user.email === loginEmail) {
-        // Decrypt the stored password
         const decryptedPassword = CryptoJS.AES.decrypt(user.password, 'secret-key').toString(CryptoJS.enc.Utf8);
-
         if (decryptedPassword === loginPassword) {
-            showFeedbackPopup("Successfully logged in!"); // Show feedback pop-up
+            showFeedbackPopup("Successfully logged in!");
             setTimeout(() => {
-                document.getElementById('auth-section').style.display = 'none'; // Hide auth section
-                document.getElementById('expense-section').style.display = 'block'; // Show expense section
-                initializeMonthlyCalendar(); // Initialize the calendar on login
-            }, 4000); // Redirect after 4 seconds
+                document.getElementById('auth-section').style.display = 'none';
+                document.getElementById('expense-section').style.display = 'block';
+                initializeMonthlyCalendar();
+                displayBudget();
+                displayExpenses(); // Ensure expenses are displayed on login
+            }, 4000);
         } else {
-            showFeedbackPopup("Invalid credentials. Try again!"); // Show feedback pop-up
+            showFeedbackPopup("Invalid credentials. Try again!");
         }
     } else {
-        showFeedbackPopup("Invalid credentials. Try again!"); // Show feedback pop-up
+        showFeedbackPopup("Invalid credentials. Try again!");
     }
 });
 
-
-
 // Handle Logout
-document.getElementById('logout-button').addEventListener('click', function() {
-    showFeedbackPopup("Logged out successfully!"); // Show feedback pop-up
+document.getElementById('logout-button').addEventListener('click', function () {
+    showFeedbackPopup("Logged out successfully!");
     setTimeout(() => {
         document.getElementById('expense-section').style.display = 'none';
-        document.getElementById('auth-section').style.display = 'block'; // Show auth section again
-    }, 4000); // Redirect after 4 seconds
+        document.getElementById('auth-section').style.display = 'block';
+    }, 4000);
 });
 
 // Function to show feedback popup with progress bar
@@ -100,7 +96,7 @@ function showFeedbackPopup(message) {
         popup.style.opacity = '0';
         setTimeout(() => {
             popup.style.display = 'none';
-        }, 500); // Ensure popup fades out
+        }, 500);
     }, 4000);
 }
 
@@ -110,147 +106,142 @@ function resetSignupForm() {
 }
 
 // Initialize monthly calendar
-let currentMonthIndex = new Date().getMonth(); // Get current month index (0-11)
+let currentMonthIndex = new Date().getMonth();
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-// Function to initialize the monthly calendar
 function initializeMonthlyCalendar() {
-   displayCurrentMonth(); // Call to display the current month
+    displayCurrentMonth();
 }
 
-// Function to display the current month
 function displayCurrentMonth() {
-   document.getElementById('current-month').textContent = months[currentMonthIndex];
-   displayExpenses(); // Display expenses for the current month
-
-   const prevMonthButton = document.getElementById('prev-month');
-   const nextMonthButton = document.getElementById('next-month');
-
-   prevMonthButton.removeEventListener('click', handlePrevMonth);
-   nextMonthButton.removeEventListener('click', handleNextMonth);
-
-   prevMonthButton.addEventListener('click', handlePrevMonth);
-   nextMonthButton.addEventListener('click', handleNextMonth);
+    document.getElementById('current-month').textContent = months[currentMonthIndex];
+    displayExpenses();
+    displayBudget();
 }
 
-// Handle previous month button click
-function handlePrevMonth() {
-   currentMonthIndex = (currentMonthIndex - 1 + 12) % 12; // Go to previous month
-   displayCurrentMonth();
+// Function to display the budget
+function displayBudget() {
+    const budgetDisplay = document.getElementById('budget-display');
+    budgetDisplay.textContent = `Budget: $${monthlyBudget.toFixed(2)}`;
 }
 
-// Handle next month button click
-function handleNextMonth() {
-   currentMonthIndex = (currentMonthIndex + 1) % 12; // Go to next month
-   displayCurrentMonth();
-}
-
-// Handle SAVE button click
-document.getElementById('save-expenses').addEventListener('click', function() {
-   showFeedbackPopup("Saved successfully!"); // Show feedback pop-up for saving expenses
+// Function to open budget modal
+document.querySelector('.budget-triangle').addEventListener('click', function () {
+    const modal = document.getElementById('budget-modal');
+    modal.style.display = 'block';
 });
 
-// Function to display expenses for the current month
+// Handle OK button in the budget modal
+document.getElementById('budget-ok-button').addEventListener('click', function () {
+    const budgetInput = document.getElementById('budget-input').value;
+    const modal = document.getElementById('budget-modal');
+
+    if (!isNaN(parseFloat(budgetInput)) && parseFloat(budgetInput) > 0) {
+        monthlyBudget = parseFloat(budgetInput);
+        showFeedbackPopup("Monthly budget successfully added!");
+        displayBudget();
+        modal.style.display = 'none';
+    } else {
+        showFeedbackPopup("Please enter a valid budget amount!");
+    }
+});
+
+// Handle close modal via X button
+document.querySelector('#budget-modal .close').addEventListener('click', function () {
+    document.getElementById('budget-modal').style.display = 'none';
+});
+
+// Close modal when clicking outside
+window.addEventListener('click', function (event) {
+    const modal = document.getElementById('budget-modal');
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
+});
+
+// Function to display expenses
 function displayExpenses() {
-   const expenses = JSON.parse(localStorage.getItem('expenses')) || []; // Get expenses from local storage
+    const expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+    const expenseList = document.getElementById('expense-list');
+    expenseList.innerHTML = '';
 
-   const expenseList = document.getElementById('expense-list');
-   expenseList.innerHTML = ''; // Clear existing list
+    const currentMonthExpenses = defaultExpenses.map(item => {
+        const existingExpense = expenses.find(exp => exp && exp.name === item.name && exp.month === currentMonthIndex);
+        return existingExpense ? existingExpense : { ...item, month: currentMonthIndex, amount: 0 };
+    });
 
-   const currentMonthExpenses = defaultExpenses.map(item => {
-       const existingExpense = expenses.find(exp => exp && exp.name === item.name && exp.month === currentMonthIndex);
-       return existingExpense ? existingExpense : { ...item, month: currentMonthIndex, amount: 0 }; 
-   });
+    currentMonthExpenses.forEach((expense, index) => {
+        const li = document.createElement('li');
+        li.textContent = `${expense.name}: `;
 
-   currentMonthExpenses.forEach((expense, index) => {
-       const li = document.createElement('li');
-       li.textContent = `${expense.name}: `;
+        const amountSpan = document.createElement('span');
+        amountSpan.textContent = `$${expense.amount.toFixed(2)}`;
+        li.appendChild(amountSpan);
 
-       const amountSpan = document.createElement('span'); 
-       amountSpan.textContent = `$${expense.amount.toFixed(2)}`; 
-       li.appendChild(amountSpan); 
+        const triangle = document.createElement('div');
+        triangle.className = 'triangle';
+        triangle.onclick = function () { openUpdateModal(expense, index); };
+        li.appendChild(triangle);
 
-       const triangle = document.createElement('div'); 
-       triangle.className = 'triangle'; 
-       triangle.onclick = function() { openUpdateModal(expense, index); }; 
-       li.appendChild(triangle); 
+        expenseList.appendChild(li);
+    });
 
-       expenseList.appendChild(li); 
-   });
-
-   const totalAmount = currentMonthExpenses.reduce((total, expense) => total + expense.amount, 0);
-   document.getElementById('total-amount').textContent = `Total Amount: $${totalAmount.toFixed(2)}`;
+    const totalAmount = currentMonthExpenses.reduce((total, expense) => total + expense.amount, 0);
+    document.getElementById('total-amount').textContent = `Total Amount: $${totalAmount.toFixed(2)}`;
 }
 
 // Open modal for updating expense
 function openUpdateModal(expense, index) {
-   const modal = document.getElementById('update-modal');
-   const closeButton = document.querySelector('.close');
-   const updateAmountInput = document.getElementById('update-amount');
+    const modal = document.getElementById('update-modal');
+    modal.style.display = 'block';
 
-   modal.style.display = 'block'; 
-   updateAmountInput.value = ''; 
+    document.getElementById('update-amount').value = '';
 
-   // Add event listeners for update buttons with feedback messages
-   document.getElementById('add-amount').onclick = function() {
-       const amountToAdd = parseFloat(updateAmountInput.value);
-       if (!isNaN(amountToAdd)) {
-           expense.amount += amountToAdd;
-           updateExpense(index, expense);
-           showFeedbackPopup("Amount successfully added!"); // Feedback message for adding amount
-           modal.style.display = 'none'; 
-       }
-   };
+    document.getElementById('add-amount').onclick = function () {
+        const amountToAdd = parseFloat(document.getElementById('update-amount').value);
+        if (!isNaN(amountToAdd)) {
+            expense.amount += amountToAdd;
+            updateExpense(index, expense);
+            showFeedbackPopup("Amount successfully added!");
+            modal.style.display = 'none';
+        }
+    };
 
-   document.getElementById('subtract-amount').onclick = function() {
-       const amountToSubtract = parseFloat(updateAmountInput.value);
-       if (!isNaN(amountToSubtract)) {
-           expense.amount -= amountToSubtract;
-           updateExpense(index, expense);
-           showFeedbackPopup("Amount successfully subtracted!"); // Feedback message for subtracting amount
-           modal.style.display = 'none'; 
-       }
-   };
+    document.getElementById('subtract-amount').onclick = function () {
+        const amountToSubtract = parseFloat(document.getElementById('update-amount').value);
+        if (!isNaN(amountToSubtract)) {
+            expense.amount -= amountToSubtract;
+            updateExpense(index, expense);
+            showFeedbackPopup("Amount successfully subtracted!");
+            modal.style.display = 'none';
+        }
+    };
 
-   document.getElementById('reset-amount').onclick = function() {
-       expense.amount = 0;
-       updateExpense(index, expense);
-       showFeedbackPopup("Amount successfully reset!"); // Feedback message for resetting amount
-       modal.style.display = 'none'; 
-   };
+    document.getElementById('reset-amount').onclick = function () {
+        expense.amount = 0;
+        updateExpense(index, expense);
+        showFeedbackPopup("Amount successfully reset!");
+        modal.style.display = 'none';
+    };
 
-   document.getElementById('enter-new-amount').onclick = function() {
-       const newAmount = parseFloat(updateAmountInput.value);
-       if (!isNaN(newAmount)) {
-           expense.amount = newAmount;
-           updateExpense(index, expense);
-           showFeedbackPopup("New amount successfully entered!"); // Feedback message for entering new amount
-           modal.style.display = 'none'; 
-       }
-   };
-
-   closeButton.onclick = function() {
-       modal.style.display = 'none'; 
-   };
-
-   window.onclick = function(event) {
-       if (event.target === modal) {
-           modal.style.display = 'none'; 
-       }
-   };
+    document.getElementById('enter-new-amount').onclick = function () {
+        const newAmount = parseFloat(document.getElementById('update-amount').value);
+        if (!isNaN(newAmount)) {
+            expense.amount = newAmount;
+            updateExpense(index, expense);
+            showFeedbackPopup("New amount successfully entered!");
+            modal.style.display = 'none';
+        }
+    };
 }
 
-// Update expense in local storage and refresh display
+// Update expenses in local storage and refresh display
 function updateExpense(index, updatedExpense) {
-   const expenses = JSON.parse(localStorage.getItem('expenses')) || []; 
-
-   if (updatedExpense.month === currentMonthIndex) {
-       expenses[index] = updatedExpense; 
-   }
-
-   localStorage.setItem('expenses', JSON.stringify(expenses)); 
-   displayCurrentMonth(); 
+    const expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+    expenses[index] = updatedExpense;
+    localStorage.setItem('expenses', JSON.stringify(expenses));
+    displayCurrentMonth();
 }
 
-// Call displayExpenses on page load to show existing expenses
-displayCurrentMonth();
+// Initialize the app
+initializeMonthlyCalendar();
