@@ -305,61 +305,7 @@ function renderLineChart(labels, data) {
         }
     });
 
-    // If needed for debugging, you can log
-    console.log("Line Chart Rendered", labels, data);
-}
-
-
-
-function renderLineChart(labels, data) {
-    const ctx = document.getElementById('expense-line-chart').getContext('2d');
-    const expenseLineChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels, // Months (X-axis)
-            datasets: [{
-                label: 'Monthly Expenses',
-                data: data, // Total expenses per month
-                borderColor: '#36A2EB',
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                tension: 0.4, // Smooth curve
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'top'
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function (context) {
-                            return `$${context.raw.toFixed(2)}`;
-                        }
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Months',
-                        color: '#b3c300'
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Total Expense ($)',
-                        color: '#b3c300'
-                    },
-                    beginAtZero: true
-                }
-            }
-        }
-    });
+    console.log("Line Chart Rendered", labels, data); // Debugging log
 }
 
 

@@ -364,6 +364,24 @@ footer p {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
 }
 
+/* Budget Progress Bar Styles */
+#budget-progress-container {
+    width: 100%;
+    background-color: #444; /* Dark background for the progress container */
+    height: 20px;
+    border-radius: 10px;
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+#budget-progress-bar {
+    width: 0%;
+    height: 100%;
+    background-color: #36A2EB; /* Initial color: blue */
+    transition: width 0.3s ease, background-color 0.3s ease;
+    border-radius: 10px;
+}
+
 
 @media (max-width: 480px) {
     h1 {
