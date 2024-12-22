@@ -356,6 +356,14 @@ footer p {
     border-radius: 50%;
 }
 
+#expense-line-chart {
+    margin-top: 20px;
+    border-radius: 10px;
+    background-color: #000; /* Black background for consistent theme */
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
 
 @media (max-width: 480px) {
     h1 {
