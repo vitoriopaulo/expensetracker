@@ -180,8 +180,17 @@ document.getElementById('logout-button').addEventListener('click', function () {
     setTimeout(() => {
         document.getElementById('expense-section').style.display = 'none';
         document.getElementById('auth-section').style.display = 'block';
-    }, 4000);
+
+        // Optionally, reset or reinitialize global variables if needed
+        currentMonthIndex = new Date().getMonth();
+        initializeMonthlyCalendar();
+    }, 2000);
 });
+
+
+
+
+
 
 // Function to show feedback popup with progress bar
 // Function to show feedback popup with progress bar
@@ -213,10 +222,20 @@ function resetSignupForm() {
     document.getElementById('signup-form').reset();
 }
 
+
+
+
 // Initialize monthly calendar
-let currentMonthIndex = new Date().getMonth();
-// Array of month names
+let currentMonthIndex = new Date().getMonth(); // Ensure this is initialized
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+function initializeMonthlyCalendar() {
+    displayCurrentMonth(); // Ensure this function is called to render the calendar
+}
+
+
+
+
 
 // Event listener for Previous button
 document.getElementById('prev-month').addEventListener('click', function () {
@@ -234,13 +253,16 @@ document.getElementById('next-month').addEventListener('click', function () {
 
 // Function to display the current month
 function displayCurrentMonth() {
-    console.log("Displaying month:", months[currentMonthIndex]); // Debugging log
-    const currentMonthSpan = document.getElementById('current-month');
-    currentMonthSpan.textContent = months[currentMonthIndex]; // Update month display
-    displayExpenses(); // Refresh expense list
-    displayBudget();   // Refresh budget display
-    renderExpenseChart(); // Refresh pie chart
+    // Ensure the calendar shows the current month
+    document.getElementById('current-month').textContent = months[currentMonthIndex];
+
+    // Fetch and display the current month's expenses
+    displayExpenses();
+
+    // Optionally render any related charts
+    renderExpenseChart();
 }
+
 
 
 
@@ -294,14 +316,12 @@ function displayExpenses() {
     const allExpenses = JSON.parse(localStorage.getItem('expenses')) || [];
     const currentMonthData = allExpenses.find(exp => exp.month === currentMonthIndex);
 
-    console.log("Current Month Data for Expenses:", currentMonthData); // Debug
-
-    const expenseList = document.getElementById('expense-list');
-    expenseList.innerHTML = '';
-
     const currentMonthExpenses = currentMonthData
         ? currentMonthData.data
         : defaultExpenses.map(exp => ({ ...exp, month: currentMonthIndex }));
+
+    const expenseList = document.getElementById('expense-list');
+    expenseList.innerHTML = '';
 
     currentMonthExpenses.forEach((expense, index) => {
         const li = document.createElement('li');
@@ -323,9 +343,8 @@ function displayExpenses() {
 
     const totalAmount = currentMonthExpenses.reduce((total, expense) => total + expense.amount, 0);
     document.getElementById('total-amount').textContent = `Total Amount: $${totalAmount.toFixed(2)}`;
-
-    console.log("Rendered Expense List:", currentMonthExpenses); // Debug
 }
+
 
     // Update total amount
     const totalAmount = currentMonthExpenses.reduce((total, expense) => total + expense.amount, 0);
@@ -514,16 +533,14 @@ initializeMonthlyCalendar();
 
 
 
-ddocument.getElementById('prev-month').addEventListener('click', function () {
-    console.log("Previous button clicked"); // Debugging log
-    currentMonthIndex = (currentMonthIndex - 1 + 12) % 12;
-    displayCurrentMonth();
+document.getElementById('prev-month').addEventListener('click', function () {
+    currentMonthIndex = (currentMonthIndex - 1 + 12) % 12; // Go to previous month
+    displayCurrentMonth(); // Update the display
 });
 
 document.getElementById('next-month').addEventListener('click', function () {
-    console.log("Next button clicked"); // Debugging log
-    currentMonthIndex = (currentMonthIndex + 1) % 12;
-    displayCurrentMonth();
+    currentMonthIndex = (currentMonthIndex + 1) % 12; // Go to next month
+    displayCurrentMonth(); // Update the display
 });
 
 
