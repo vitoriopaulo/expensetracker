@@ -151,29 +151,22 @@ document.getElementById('login-form').addEventListener('submit', function (e) {
 
 // Handle SAVE button click
 document.getElementById('save-expenses').addEventListener('click', function () {
-    // Retrieve existing expenses from localStorage
     const allExpenses = JSON.parse(localStorage.getItem('expenses')) || [];
-    
-    // Extract current month's expenses from the display
+
+    // Map current expenses from display to store in localStorage
     const currentMonthExpenses = Array.from(document.querySelectorAll('#expense-list li')).map((item, index) => {
         const amountText = item.querySelector('span').textContent;
         const amount = parseFloat(amountText.replace('$', ''));
         return { ...defaultExpenses[index], amount, month: currentMonthIndex };
     });
 
-    console.log("Expenses to save for the current month:", currentMonthExpenses); // Debug
+    // Filter out the current month from the existing data and merge
+    const updatedExpenses = allExpenses.filter(exp => exp.month !== currentMonthIndex).concat(currentMonthExpenses);
 
-    // Filter out any existing entries for the current month
-    const filteredExpenses = allExpenses.filter(exp => exp.month !== currentMonthIndex);
-
-    // Save the updated expenses data
-    localStorage.setItem('expenses', JSON.stringify([...filteredExpenses, ...currentMonthExpenses]));
-
-    console.log("Updated expenses in localStorage:", JSON.parse(localStorage.getItem('expenses'))); // Debug
-
-    // Show feedback to the user
+    localStorage.setItem('expenses', JSON.stringify(updatedExpenses));
     showFeedbackPopup("Expenses saved successfully!");
 });
+
 
 
 
@@ -311,18 +304,21 @@ function displayExpenses() {
 function renderExpenseChart() {
     const ctx = document.getElementById('expense-pie-chart').getContext('2d');
 
-    const expenses = JSON.parse(localStorage.getItem('expenses')) || [];
-    const currentMonthExpenses = expenses.filter(exp => exp && exp.month === currentMonthIndex);
+    const allExpenses = JSON.parse(localStorage.getItem('expenses')) || [];
+    const currentMonthData = allExpenses.find(exp => exp.month === currentMonthIndex);
 
-    const labels = currentMonthExpenses.map(exp => exp.name);
-    const data = currentMonthExpenses.map(exp => exp.amount);
+    if (!currentMonthData || currentMonthData.data.every(exp => exp.amount === 0)) {
+        console.log("No expenses to display in Pie Chart");
+        return;
+    }
 
-    // Destroy previous chart instance to avoid overlap
+    const labels = currentMonthData.data.map(exp => exp.name);
+    const data = currentMonthData.data.map(exp => exp.amount);
+
     if (expensePieChart) {
         expensePieChart.destroy();
     }
 
-    // Render new chart
     expensePieChart = new Chart(ctx, {
         type: 'pie',
         data: {
@@ -336,14 +332,12 @@ function renderExpenseChart() {
         },
         options: {
             plugins: {
-                legend: {
-                    display: true,
-                    position: 'top'
-                }
+                legend: { display: true, position: 'top' }
             }
         }
     });
 }
+
 
 // Open modal for updating expense
 function openUpdateModal(expense, index) {
@@ -392,10 +386,21 @@ function openUpdateModal(expense, index) {
 
 // Update expenses in local storage and refresh display
 function updateExpense(index, updatedExpense) {
-    const expenses = JSON.parse(localStorage.getItem('expenses')) || [];
-    expenses[index] = updatedExpense;
-    localStorage.setItem('expenses', JSON.stringify(expenses));
-    displayCurrentMonth();
+    const allExpenses = JSON.parse(localStorage.getItem('expenses')) || [];
+
+    // Find or initialize current month's data
+    let currentMonthData = allExpenses.find(exp => exp.month === currentMonthIndex);
+    if (!currentMonthData) {
+        currentMonthData = { month: currentMonthIndex, data: [...defaultExpenses] };
+        allExpenses.push(currentMonthData);
+    }
+
+    // Update the specific expense
+    currentMonthData.data[index] = updatedExpense;
+
+    // Save back to local storage
+    localStorage.setItem('expenses', JSON.stringify(allExpenses));
+    displayCurrentMonth(); // Refresh UI
 }
 
 
