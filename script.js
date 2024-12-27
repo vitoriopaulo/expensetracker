@@ -1,3 +1,16 @@
+// Reset local storage for testing
+localStorage.removeItem('user');
+console.log("Local storage has been reset for testing.");
+
+
+
+
+
+localStorage.clear();
+console.log("Local storage has been reset for testing.");
+
+
+
 // Boilerplate expenses
 const defaultExpenses = [
     { name: "Rent", amount: 0 },
@@ -24,51 +37,148 @@ const defaultExpenses = [
 let monthlyBudget = 0;
 let expensePieChart;
 
+
+
+function initializeMonthlyCalendar() {
+    displayCurrentMonth();
+}
+
+
+
+// Handle Sign Up
+// Handle Sign Up
 // Handle Sign Up
 document.getElementById('signup-form').addEventListener('submit', function (e) {
     e.preventDefault();
-    const email = document.getElementById('email').value;
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirm-password').value;
 
-    if (password !== confirmPassword) {
-        showFeedbackPopup("Passwords don't match. Try again!");
+    const email = document.getElementById('email').value.trim();
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const confirmPassword = document.getElementById('confirm-password').value.trim();
+
+    console.log("Entered email during Sign Up:", email); // Debugging log for email
+    console.log("Entered username during Sign Up:", username); // Debugging log for username
+
+    if (!email || !username || !password) {
+        showFeedbackPopup("All fields are required. Please fill out the form.");
         return;
     }
 
+    if (password !== confirmPassword) {
+        showFeedbackPopup("Passwords do not match. Try again!");
+        return;
+    }
+
+    // Encrypt the password
     const encryptedPassword = CryptoJS.AES.encrypt(password, 'secret-key').toString();
-    localStorage.setItem('user', JSON.stringify({ email, username, password: encryptedPassword }));
-    showFeedbackPopup("Sign up successful!");
+
+    // Save the user data
+    const userData = { email, username, password: encryptedPassword };
+    localStorage.setItem('user', JSON.stringify(userData));
+
+    console.log("User data saved after Sign Up:", userData); // Debugging log for saved data
+    showFeedbackPopup("Sign Up successful!");
     resetSignupForm();
 });
 
+
+
+
+
+
+// Handle Log In
+// Handle Log In
+// Handle Log In
 // Handle Log In
 document.getElementById('login-form').addEventListener('submit', function (e) {
     e.preventDefault();
-    const loginEmail = document.getElementById('login-email').value;
-    const loginPassword = document.getElementById('login-password').value;
-    const user = JSON.parse(localStorage.getItem('user'));
 
-    if (user && user.email === loginEmail) {
-        const decryptedPassword = CryptoJS.AES.decrypt(user.password, 'secret-key').toString(CryptoJS.enc.Utf8);
-        if (decryptedPassword === loginPassword) {
-            showFeedbackPopup("Successfully logged in!");
-            setTimeout(() => {
-                document.getElementById('auth-section').style.display = 'none';
-                document.getElementById('expense-section').style.display = 'block';
-                initializeMonthlyCalendar();
-                displayBudget();
-                displayExpenses(); // Ensure expenses are displayed on login
-                renderExpenseChart();
-            }, 4000);
-        } else {
-            showFeedbackPopup("Invalid credentials. Try again!");
-        }
-    } else {
-        showFeedbackPopup("Invalid credentials. Try again!");
+    const loginEmail = document.getElementById('login-email').value.trim();
+    const loginPassword = document.getElementById('login-password').value.trim();
+
+    console.log("Entered email during Log In:", loginEmail); // Debugging log for login email
+
+    if (!loginEmail || !loginPassword) {
+        showFeedbackPopup("Please enter your email and password.");
+        return;
     }
+
+    // Retrieve user data from local storage
+    const storedData = localStorage.getItem('user');
+    if (!storedData) {
+        showFeedbackPopup("No user data found. Please Sign Up first.");
+        console.error("No user data in local storage.");
+        return;
+    }
+
+    const user = JSON.parse(storedData);
+    console.log("Stored user data during Log In:", user); // Debugging log for stored data
+
+    // Compare email
+    if (user.email !== loginEmail) {
+        showFeedbackPopup("Email not found or mismatch. Please try again.");
+        console.error(`Login failed: Entered email (${loginEmail}) does not match stored email (${user.email}).`);
+        return;
+    }
+
+    // Decrypt and compare password
+    const decryptedPassword = CryptoJS.AES.decrypt(user.password, 'secret-key').toString(CryptoJS.enc.Utf8);
+    console.log("Decrypted password during Log In:", decryptedPassword);
+
+    if (decryptedPassword !== loginPassword) {
+        showFeedbackPopup("Invalid password. Please try again.");
+        console.error(`Login failed: Entered password (${loginPassword}) does not match decrypted password (${decryptedPassword}).`);
+        return;
+    }
+
+    // Successful login
+    showFeedbackPopup("Successfully logged in!");
+    setTimeout(() => {
+        document.getElementById('auth-section').style.display = 'none';
+        document.getElementById('expense-section').style.display = 'block';
+        initializeMonthlyCalendar();
+        displayBudget();
+        displayExpenses();
+        renderExpenseChart();
+    }, 2000);
 });
+
+
+
+
+
+
+
+// Handle SAVE button click
+document.getElementById('save-expenses').addEventListener('click', function () {
+    // Retrieve existing expenses from localStorage
+    const allExpenses = JSON.parse(localStorage.getItem('expenses')) || [];
+    
+    // Extract current month's expenses from the display
+    const currentMonthExpenses = Array.from(document.querySelectorAll('#expense-list li')).map((item, index) => {
+        const amountText = item.querySelector('span').textContent;
+        const amount = parseFloat(amountText.replace('$', ''));
+        return { ...defaultExpenses[index], amount, month: currentMonthIndex };
+    });
+
+    console.log("Expenses to save for the current month:", currentMonthExpenses); // Debug
+
+    // Filter out any existing entries for the current month
+    const filteredExpenses = allExpenses.filter(exp => exp.month !== currentMonthIndex);
+
+    // Save the updated expenses data
+    localStorage.setItem('expenses', JSON.stringify([...filteredExpenses, ...currentMonthExpenses]));
+
+    console.log("Updated expenses in localStorage:", JSON.parse(localStorage.getItem('expenses'))); // Debug
+
+    // Show feedback to the user
+    showFeedbackPopup("Expenses saved successfully!");
+});
+
+
+
+
+
 
 // Handle Logout
 document.getElementById('logout-button').addEventListener('click', function () {
@@ -79,6 +189,7 @@ document.getElementById('logout-button').addEventListener('click', function () {
     }, 4000);
 });
 
+// Function to show feedback popup with progress bar
 // Function to show feedback popup with progress bar
 function showFeedbackPopup(message) {
     const popup = document.getElementById('feedback-popup');
@@ -101,6 +212,7 @@ function showFeedbackPopup(message) {
         }, 500);
     }, 4000);
 }
+
 
 // Function to reset the Sign Up form
 function resetSignupForm() {
@@ -164,14 +276,16 @@ window.addEventListener('click', function (event) {
 
 // Function to display expenses
 function displayExpenses() {
-    const expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+    const allExpenses = JSON.parse(localStorage.getItem('expenses')) || [];
+    const currentMonthData = allExpenses.find(exp => exp.month === currentMonthIndex);
+
+    // If no data exists for the current month, initialize it
+    const currentMonthExpenses = currentMonthData
+        ? currentMonthData.data
+        : defaultExpenses.map(exp => ({ ...exp, month: currentMonthIndex }));
+
     const expenseList = document.getElementById('expense-list');
     expenseList.innerHTML = '';
-
-    const currentMonthExpenses = defaultExpenses.map(item => {
-        const existingExpense = expenses.find(exp => exp && exp.name === item.name && exp.month === currentMonthIndex);
-        return existingExpense ? existingExpense : { ...item, month: currentMonthIndex, amount: 0 };
-    });
 
     currentMonthExpenses.forEach((expense, index) => {
         const li = document.createElement('li');
@@ -192,6 +306,7 @@ function displayExpenses() {
     const totalAmount = currentMonthExpenses.reduce((total, expense) => total + expense.amount, 0);
     document.getElementById('total-amount').textContent = `Total Amount: $${totalAmount.toFixed(2)}`;
 }
+
 
 function renderExpenseChart() {
     const ctx = document.getElementById('expense-pie-chart').getContext('2d');
@@ -283,5 +398,31 @@ function updateExpense(index, updatedExpense) {
     displayCurrentMonth();
 }
 
+
 // Initialize the app
 initializeMonthlyCalendar();
+
+
+
+document.getElementById('prev-month').addEventListener('click', function () {
+    currentMonthIndex = (currentMonthIndex - 1 + 12) % 12;
+    displayCurrentMonth();
+});
+
+document.getElementById('next-month').addEventListener('click', function () {
+    currentMonthIndex = (currentMonthIndex + 1) % 12;
+    displayCurrentMonth();
+});
+
+
+
+
+function initializeApp() {
+    if (!localStorage.getItem('expenses')) {
+        localStorage.setItem('expenses', JSON.stringify([]));
+    }
+    initializeMonthlyCalendar();
+}
+initializeApp();
+
+
