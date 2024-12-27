@@ -1,3 +1,16 @@
+// Reset local storage for testing
+localStorage.removeItem('user');
+console.log("Local storage has been reset for testing.");
+
+
+
+
+
+localStorage.clear();
+console.log("Local storage has been reset for testing.");
+
+
+
 // Boilerplate expenses
 const defaultExpenses = [
     { name: "Rent", amount: 0 },
@@ -24,51 +37,142 @@ const defaultExpenses = [
 let monthlyBudget = 0;
 let expensePieChart;
 
+
+
+function initializeMonthlyCalendar() {
+    displayCurrentMonth();
+}
+
+
+
+// Handle Sign Up
+// Handle Sign Up
 // Handle Sign Up
 document.getElementById('signup-form').addEventListener('submit', function (e) {
     e.preventDefault();
-    const email = document.getElementById('email').value;
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirm-password').value;
 
-    if (password !== confirmPassword) {
-        showFeedbackPopup("Passwords don't match. Try again!");
+    const email = document.getElementById('email').value.trim();
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const confirmPassword = document.getElementById('confirm-password').value.trim();
+
+    console.log("Entered email during Sign Up:", email); // Debugging log for email
+    console.log("Entered username during Sign Up:", username); // Debugging log for username
+
+    if (!email || !username || !password) {
+        showFeedbackPopup("All fields are required. Please fill out the form.");
         return;
     }
 
+    if (password !== confirmPassword) {
+        showFeedbackPopup("Passwords do not match. Try again!");
+        return;
+    }
+
+    // Encrypt the password
     const encryptedPassword = CryptoJS.AES.encrypt(password, 'secret-key').toString();
-    localStorage.setItem('user', JSON.stringify({ email, username, password: encryptedPassword }));
-    showFeedbackPopup("Sign up successful!");
+
+    // Save the user data
+    const userData = { email, username, password: encryptedPassword };
+    localStorage.setItem('user', JSON.stringify(userData));
+
+    console.log("User data saved after Sign Up:", userData); // Debugging log for saved data
+    showFeedbackPopup("Sign Up successful!");
     resetSignupForm();
 });
 
+
+
+
+
+
+// Handle Log In
+// Handle Log In
+// Handle Log In
 // Handle Log In
 document.getElementById('login-form').addEventListener('submit', function (e) {
     e.preventDefault();
-    const loginEmail = document.getElementById('login-email').value;
-    const loginPassword = document.getElementById('login-password').value;
-    const user = JSON.parse(localStorage.getItem('user'));
 
-    if (user && user.email === loginEmail) {
-        const decryptedPassword = CryptoJS.AES.decrypt(user.password, 'secret-key').toString(CryptoJS.enc.Utf8);
-        if (decryptedPassword === loginPassword) {
-            showFeedbackPopup("Successfully logged in!");
-            setTimeout(() => {
-                document.getElementById('auth-section').style.display = 'none';
-                document.getElementById('expense-section').style.display = 'block';
-                initializeMonthlyCalendar();
-                displayBudget();
-                displayExpenses(); // Ensure expenses are displayed on login
-                renderExpenseChart();
-            }, 4000);
-        } else {
-            showFeedbackPopup("Invalid credentials. Try again!");
-        }
-    } else {
-        showFeedbackPopup("Invalid credentials. Try again!");
+    const loginEmail = document.getElementById('login-email').value.trim();
+    const loginPassword = document.getElementById('login-password').value.trim();
+
+    console.log("Entered email during Log In:", loginEmail); // Debugging log for login email
+
+    if (!loginEmail || !loginPassword) {
+        showFeedbackPopup("Please enter your email and password.");
+        return;
     }
+
+    // Retrieve user data from local storage
+    const storedData = localStorage.getItem('user');
+    if (!storedData) {
+        showFeedbackPopup("No user data found. Please Sign Up first.");
+        console.error("No user data in local storage.");
+        return;
+    }
+
+    const user = JSON.parse(storedData);
+    console.log("Stored user data during Log In:", user); // Debugging log for stored data
+
+    // Compare email
+    if (user.email !== loginEmail) {
+        showFeedbackPopup("Email not found or mismatch. Please try again.");
+        console.error(`Login failed: Entered email (${loginEmail}) does not match stored email (${user.email}).`);
+        return;
+    }
+
+    // Decrypt and compare password
+    const decryptedPassword = CryptoJS.AES.decrypt(user.password, 'secret-key').toString(CryptoJS.enc.Utf8);
+    console.log("Decrypted password during Log In:", decryptedPassword);
+
+    if (decryptedPassword !== loginPassword) {
+        showFeedbackPopup("Invalid password. Please try again.");
+        console.error(`Login failed: Entered password (${loginPassword}) does not match decrypted password (${decryptedPassword}).`);
+        return;
+    }
+
+    // Successful login
+    showFeedbackPopup("Successfully logged in!");
+    setTimeout(() => {
+        document.getElementById('auth-section').style.display = 'none';
+        document.getElementById('expense-section').style.display = 'block';
+        initializeMonthlyCalendar();
+        displayBudget();
+        displayExpenses();
+        renderExpenseChart();
+    }, 2000);
 });
+
+
+
+
+
+
+
+// Handle SAVE button click
+document.getElementById('save-expenses').addEventListener('click', function () {
+    const allExpenses = JSON.parse(localStorage.getItem('expenses')) || [];
+    
+    const currentMonthExpenses = Array.from(document.querySelectorAll('#expense-list li')).map((item, index) => {
+        const amountText = item.querySelector('span').textContent;
+        const amount = parseFloat(amountText.replace('$', ''));
+        return { ...defaultExpenses[index], amount, month: currentMonthIndex };
+    });
+
+    const filteredExpenses = allExpenses.filter(exp => exp.month !== currentMonthIndex);
+
+    localStorage.setItem('expenses', JSON.stringify([...filteredExpenses, { month: currentMonthIndex, data: currentMonthExpenses }]));
+
+    console.log("Expenses Saved for Current Month:", currentMonthExpenses); // Debug
+    showFeedbackPopup("Expenses saved successfully!");
+});
+
+
+
+
+
+
+
 
 // Handle Logout
 document.getElementById('logout-button').addEventListener('click', function () {
@@ -79,6 +183,7 @@ document.getElementById('logout-button').addEventListener('click', function () {
     }, 4000);
 });
 
+// Function to show feedback popup with progress bar
 // Function to show feedback popup with progress bar
 function showFeedbackPopup(message) {
     const popup = document.getElementById('feedback-popup');
@@ -102,6 +207,7 @@ function showFeedbackPopup(message) {
     }, 4000);
 }
 
+
 // Function to reset the Sign Up form
 function resetSignupForm() {
     document.getElementById('signup-form').reset();
@@ -109,12 +215,34 @@ function resetSignupForm() {
 
 // Initialize monthly calendar
 let currentMonthIndex = new Date().getMonth();
+// Array of month names
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-function initializeMonthlyCalendar() {
+// Event listener for Previous button
+document.getElementById('prev-month').addEventListener('click', function () {
+    console.log("Previous button clicked"); // Debugging log
+    currentMonthIndex = (currentMonthIndex - 1 + 12) % 12; // Move to previous month
     displayCurrentMonth();
+});
+
+// Event listener for Next button
+document.getElementById('next-month').addEventListener('click', function () {
+    console.log("Next button clicked"); // Debugging log
+    currentMonthIndex = (currentMonthIndex + 1) % 12; // Move to next month
+    displayCurrentMonth();
+});
+
+// Function to display the current month
+function displayCurrentMonth() {
+    console.log("Displaying month:", months[currentMonthIndex]); // Debugging log
+    const currentMonthSpan = document.getElementById('current-month');
+    currentMonthSpan.textContent = months[currentMonthIndex]; // Update month display
+    displayExpenses(); // Refresh expense list
+    displayBudget();   // Refresh budget display
+    renderExpenseChart(); // Refresh pie chart
 }
 
+<<<<<<< HEAD
 function displayCurrentMonth() {
     document.getElementById('current-month').textContent = months[currentMonthIndex];
     displayExpenses();
@@ -122,6 +250,14 @@ function displayCurrentMonth() {
     renderExpenseChart(); // Updates Pie Chart
     updateLineChart();    // Updates Line Chart
 }
+=======
+
+
+
+
+
+
+>>>>>>> dev
 
 // Function to display the budget
 function displayBudget() {
@@ -165,14 +301,17 @@ window.addEventListener('click', function (event) {
 
 // Function to display expenses
 function displayExpenses() {
-    const expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+    const allExpenses = JSON.parse(localStorage.getItem('expenses')) || [];
+    const currentMonthData = allExpenses.find(exp => exp.month === currentMonthIndex);
+
+    console.log("Current Month Data for Expenses:", currentMonthData); // Debug
+
     const expenseList = document.getElementById('expense-list');
     expenseList.innerHTML = '';
 
-    const currentMonthExpenses = defaultExpenses.map(item => {
-        const existingExpense = expenses.find(exp => exp && exp.name === item.name && exp.month === currentMonthIndex);
-        return existingExpense ? existingExpense : { ...item, month: currentMonthIndex, amount: 0 };
-    });
+    const currentMonthExpenses = currentMonthData
+        ? currentMonthData.data
+        : defaultExpenses.map(exp => ({ ...exp, month: currentMonthIndex }));
 
     currentMonthExpenses.forEach((expense, index) => {
         const li = document.createElement('li');
@@ -184,7 +323,9 @@ function displayExpenses() {
 
         const triangle = document.createElement('div');
         triangle.className = 'triangle';
-        triangle.onclick = function () { openUpdateModal(expense, index); };
+        triangle.onclick = function () {
+            openUpdateModal(expense, index);
+        };
         li.appendChild(triangle);
 
         expenseList.appendChild(li);
@@ -192,23 +333,99 @@ function displayExpenses() {
 
     const totalAmount = currentMonthExpenses.reduce((total, expense) => total + expense.amount, 0);
     document.getElementById('total-amount').textContent = `Total Amount: $${totalAmount.toFixed(2)}`;
+
+    console.log("Rendered Expense List:", currentMonthExpenses); // Debug
 }
+
+    // Update total amount
+    const totalAmount = currentMonthExpenses.reduce((total, expense) => total + expense.amount, 0);
+    document.getElementById('total-amount').textContent = `Total Amount: $${totalAmount.toFixed(2)}`;
+function displayExpenses() {
+    const allExpenses = JSON.parse(localStorage.getItem('expenses')) || [];
+    let currentMonthData = allExpenses.find(exp => exp.month === currentMonthIndex);
+
+    // If no data for the current month, initialize with default expenses
+    if (!currentMonthData) {
+        currentMonthData = {
+            month: currentMonthIndex,
+            data: defaultExpenses.map(exp => ({ ...exp }))
+        };
+        allExpenses.push(currentMonthData);
+        localStorage.setItem('expenses', JSON.stringify(allExpenses));
+    }
+
+    const expenseList = document.getElementById('expense-list');
+    expenseList.innerHTML = ''; // Clear the current list
+
+    currentMonthData.data.forEach((expense, index) => {
+        const li = document.createElement('li');
+        li.textContent = `${expense.name}: `;
+
+        const amountSpan = document.createElement('span');
+        amountSpan.textContent = `$${expense.amount.toFixed(2)}`;
+        li.appendChild(amountSpan);
+
+        const triangle = document.createElement('div');
+        triangle.className = 'triangle';
+        triangle.onclick = function () {
+            openUpdateModal(expense, index);
+        };
+        li.appendChild(triangle);
+
+        expenseList.appendChild(li);
+    });
+
+    // Update total amount
+    const totalAmount = currentMonthData.data.reduce((total, expense) => total + expense.amount, 0);
+    document.getElementById('total-amount').textContent = `Total Amount: $${totalAmount.toFixed(2)}`;
+}
+
+
 
 function renderExpenseChart() {
     const ctx = document.getElementById('expense-pie-chart').getContext('2d');
 
-    const expenses = JSON.parse(localStorage.getItem('expenses')) || [];
-    const currentMonthExpenses = expenses.filter(exp => exp && exp.month === currentMonthIndex);
+    const allExpenses = JSON.parse(localStorage.getItem('expenses')) || [];
+    const currentMonthData = allExpenses.find(exp => exp.month === currentMonthIndex);
 
-    const labels = currentMonthExpenses.map(exp => exp.name);
-    const data = currentMonthExpenses.map(exp => exp.amount);
+    console.log("Current Month Data for Pie Chart:", currentMonthData); // Debug
 
-    // Destroy previous chart instance to avoid overlap
+    if (!currentMonthData || !currentMonthData.data) {
+        console.log("No data available for the current month. Initializing empty chart.");
+        if (expensePieChart) {
+            expensePieChart.destroy();
+        }
+        expensePieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: [],
+                datasets: [{
+                    data: [],
+                    backgroundColor: []
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    }
+                }
+            }
+        });
+        return;
+    }
+
+    const labels = currentMonthData.data.map(exp => exp.name);
+    const data = currentMonthData.data.map(exp => exp.amount);
+
+    console.log("Labels for Pie Chart:", labels); // Debug
+    console.log("Data for Pie Chart:", data); // Debug
+
     if (expensePieChart) {
         expensePieChart.destroy();
     }
 
-    // Render new chart
     expensePieChart = new Chart(ctx, {
         type: 'pie',
         data: {
@@ -246,6 +463,7 @@ function renderExpenseChart() {
 
 
 
+<<<<<<< HEAD
 function renderLineChart(labels, data) {
     const ctx = document.getElementById('expense-line-chart').getContext('2d');
     const expenseLineChart = new Chart(ctx, {
@@ -332,6 +550,8 @@ function updateLineChart() {
 
 
 
+=======
+>>>>>>> dev
 // Open modal for updating expense
 function openUpdateModal(expense, index) {
     const modal = document.getElementById('update-modal');
@@ -379,11 +599,55 @@ function openUpdateModal(expense, index) {
 
 // Update expenses in local storage and refresh display
 function updateExpense(index, updatedExpense) {
-    const expenses = JSON.parse(localStorage.getItem('expenses')) || [];
-    expenses[index] = updatedExpense;
-    localStorage.setItem('expenses', JSON.stringify(expenses));
-    displayCurrentMonth();
+    const allExpenses = JSON.parse(localStorage.getItem('expenses')) || [];
+
+    // Find or initialize current month data
+    let currentMonthData = allExpenses.find(exp => exp.month === currentMonthIndex);
+    if (!currentMonthData) {
+        currentMonthData = {
+            month: currentMonthIndex,
+            data: defaultExpenses.map(exp => ({ ...exp }))
+        };
+        allExpenses.push(currentMonthData);
+    }
+
+    // Update the specific expense
+    currentMonthData.data[index] = updatedExpense;
+
+    // Save back to localStorage
+    localStorage.setItem('expenses', JSON.stringify(allExpenses));
+    displayCurrentMonth(); // Refresh UI
 }
+
+
 
 // Initialize the app
 initializeMonthlyCalendar();
+
+
+
+ddocument.getElementById('prev-month').addEventListener('click', function () {
+    console.log("Previous button clicked"); // Debugging log
+    currentMonthIndex = (currentMonthIndex - 1 + 12) % 12;
+    displayCurrentMonth();
+});
+
+document.getElementById('next-month').addEventListener('click', function () {
+    console.log("Next button clicked"); // Debugging log
+    currentMonthIndex = (currentMonthIndex + 1) % 12;
+    displayCurrentMonth();
+});
+
+
+
+
+
+function initializeApp() {
+    if (!localStorage.getItem('expenses')) {
+        localStorage.setItem('expenses', JSON.stringify([]));
+    }
+    initializeMonthlyCalendar();
+}
+initializeApp();
+
+
