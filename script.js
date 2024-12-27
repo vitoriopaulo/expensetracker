@@ -393,36 +393,66 @@ function displayExpenses() {
 function renderExpenseChart() {
     const ctx = document.getElementById('expense-pie-chart').getContext('2d');
 
+    // Retrieve all expenses from localStorage
     const allExpenses = JSON.parse(localStorage.getItem('expenses')) || [];
+    
+    // Filter the expenses for the current month
     const currentMonthData = allExpenses.find(exp => exp.month === currentMonthIndex);
+    const currentMonthExpenses = currentMonthData
+        ? currentMonthData.data // If data exists for the current month
+        : defaultExpenses.map(exp => ({ ...exp, month: currentMonthIndex })); // Fallback to default expenses
 
-    console.log("Current Month Data for Pie Chart:", currentMonthData); // Debug
+    // Debugging: Ensure currentMonthExpenses is properly assigned
+    console.log("Rendering chart for currentMonthExpenses:", currentMonthExpenses);
 
-    if (!currentMonthData || !currentMonthData.data) {
-        console.log("No data available for the current month. Initializing empty chart.");
-        if (expensePieChart) {
-            expensePieChart.destroy();
-        }
-        expensePieChart = new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: [],
-                datasets: [{
-                    data: [],
-                    backgroundColor: []
-                }]
-            },
-            options: {
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top'
+    // Extract labels and data for the pie chart
+    const labels = currentMonthExpenses.map(exp => exp.name);
+    const data = currentMonthExpenses.map(exp => exp.amount);
+
+    // Ensure the chart only renders when there is valid data
+    if (data.every(amount => amount === 0)) {
+        console.log("No expenses recorded for the current month. Chart not rendered.");
+        return;
+    }
+
+    // Destroy previous chart instance to avoid overlap
+    if (expensePieChart) {
+        expensePieChart.destroy();
+    }
+
+    // Render new pie chart
+    expensePieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#FF6347'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        color: '#ffffff', // Better contrast for legend text
+                        font: {
+                            size: 14
+                        }
                     }
                 }
             }
-        });
-        return;
-    }
+        }
+    });
+}
+
+
+
 
     const labels = currentMonthData.data.map(exp => exp.name);
     const data = currentMonthData.data.map(exp => exp.amount);
@@ -454,7 +484,7 @@ function renderExpenseChart() {
             }
         }
     });
-}
+
 
 
 
