@@ -1,4 +1,4 @@
-/ Reset local storage for testing
+// Reset local storage for testing
 localStorage.removeItem('user');
 console.log("Local storage has been reset for testing.");
 
