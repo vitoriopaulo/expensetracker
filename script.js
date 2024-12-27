@@ -152,20 +152,21 @@ document.getElementById('login-form').addEventListener('submit', function (e) {
 // Handle SAVE button click
 document.getElementById('save-expenses').addEventListener('click', function () {
     const allExpenses = JSON.parse(localStorage.getItem('expenses')) || [];
-
-    // Map current expenses from display to store in localStorage
+    
     const currentMonthExpenses = Array.from(document.querySelectorAll('#expense-list li')).map((item, index) => {
         const amountText = item.querySelector('span').textContent;
         const amount = parseFloat(amountText.replace('$', ''));
         return { ...defaultExpenses[index], amount, month: currentMonthIndex };
     });
 
-    // Filter out the current month from the existing data and merge
-    const updatedExpenses = allExpenses.filter(exp => exp.month !== currentMonthIndex).concat(currentMonthExpenses);
+    const filteredExpenses = allExpenses.filter(exp => exp.month !== currentMonthIndex);
 
-    localStorage.setItem('expenses', JSON.stringify(updatedExpenses));
+    localStorage.setItem('expenses', JSON.stringify([...filteredExpenses, { month: currentMonthIndex, data: currentMonthExpenses }]));
+
+    console.log("Expenses Saved for Current Month:", currentMonthExpenses); // Debug
     showFeedbackPopup("Expenses saved successfully!");
 });
+
 
 
 
@@ -214,18 +215,39 @@ function resetSignupForm() {
 
 // Initialize monthly calendar
 let currentMonthIndex = new Date().getMonth();
+// Array of month names
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-function initializeMonthlyCalendar() {
+// Event listener for Previous button
+document.getElementById('prev-month').addEventListener('click', function () {
+    console.log("Previous button clicked"); // Debugging log
+    currentMonthIndex = (currentMonthIndex - 1 + 12) % 12; // Move to previous month
     displayCurrentMonth();
+});
+
+// Event listener for Next button
+document.getElementById('next-month').addEventListener('click', function () {
+    console.log("Next button clicked"); // Debugging log
+    currentMonthIndex = (currentMonthIndex + 1) % 12; // Move to next month
+    displayCurrentMonth();
+});
+
+// Function to display the current month
+function displayCurrentMonth() {
+    console.log("Displaying month:", months[currentMonthIndex]); // Debugging log
+    const currentMonthSpan = document.getElementById('current-month');
+    currentMonthSpan.textContent = months[currentMonthIndex]; // Update month display
+    displayExpenses(); // Refresh expense list
+    displayBudget();   // Refresh budget display
+    renderExpenseChart(); // Refresh pie chart
 }
 
-function displayCurrentMonth() {
-    document.getElementById('current-month').textContent = months[currentMonthIndex];
-    displayExpenses();
-    displayBudget();
-    renderExpenseChart();
-}
+
+
+
+
+
+
 
 // Function to display the budget
 function displayBudget() {
@@ -272,13 +294,14 @@ function displayExpenses() {
     const allExpenses = JSON.parse(localStorage.getItem('expenses')) || [];
     const currentMonthData = allExpenses.find(exp => exp.month === currentMonthIndex);
 
-    // If no data exists for the current month, initialize it
-    const currentMonthExpenses = currentMonthData
-        ? currentMonthData.data
-        : defaultExpenses.map(exp => ({ ...exp, month: currentMonthIndex }));
+    console.log("Current Month Data for Expenses:", currentMonthData); // Debug
 
     const expenseList = document.getElementById('expense-list');
     expenseList.innerHTML = '';
+
+    const currentMonthExpenses = currentMonthData
+        ? currentMonthData.data
+        : defaultExpenses.map(exp => ({ ...exp, month: currentMonthIndex }));
 
     currentMonthExpenses.forEach((expense, index) => {
         const li = document.createElement('li');
@@ -290,7 +313,9 @@ function displayExpenses() {
 
         const triangle = document.createElement('div');
         triangle.className = 'triangle';
-        triangle.onclick = function () { openUpdateModal(expense, index); };
+        triangle.onclick = function () {
+            openUpdateModal(expense, index);
+        };
         li.appendChild(triangle);
 
         expenseList.appendChild(li);
@@ -298,7 +323,53 @@ function displayExpenses() {
 
     const totalAmount = currentMonthExpenses.reduce((total, expense) => total + expense.amount, 0);
     document.getElementById('total-amount').textContent = `Total Amount: $${totalAmount.toFixed(2)}`;
+
+    console.log("Rendered Expense List:", currentMonthExpenses); // Debug
 }
+
+    // Update total amount
+    const totalAmount = currentMonthExpenses.reduce((total, expense) => total + expense.amount, 0);
+    document.getElementById('total-amount').textContent = `Total Amount: $${totalAmount.toFixed(2)}`;
+function displayExpenses() {
+    const allExpenses = JSON.parse(localStorage.getItem('expenses')) || [];
+    let currentMonthData = allExpenses.find(exp => exp.month === currentMonthIndex);
+
+    // If no data for the current month, initialize with default expenses
+    if (!currentMonthData) {
+        currentMonthData = {
+            month: currentMonthIndex,
+            data: defaultExpenses.map(exp => ({ ...exp }))
+        };
+        allExpenses.push(currentMonthData);
+        localStorage.setItem('expenses', JSON.stringify(allExpenses));
+    }
+
+    const expenseList = document.getElementById('expense-list');
+    expenseList.innerHTML = ''; // Clear the current list
+
+    currentMonthData.data.forEach((expense, index) => {
+        const li = document.createElement('li');
+        li.textContent = `${expense.name}: `;
+
+        const amountSpan = document.createElement('span');
+        amountSpan.textContent = `$${expense.amount.toFixed(2)}`;
+        li.appendChild(amountSpan);
+
+        const triangle = document.createElement('div');
+        triangle.className = 'triangle';
+        triangle.onclick = function () {
+            openUpdateModal(expense, index);
+        };
+        li.appendChild(triangle);
+
+        expenseList.appendChild(li);
+    });
+
+    // Update total amount
+    const totalAmount = currentMonthData.data.reduce((total, expense) => total + expense.amount, 0);
+    document.getElementById('total-amount').textContent = `Total Amount: $${totalAmount.toFixed(2)}`;
+}
+
 
 
 function renderExpenseChart() {
@@ -307,13 +378,39 @@ function renderExpenseChart() {
     const allExpenses = JSON.parse(localStorage.getItem('expenses')) || [];
     const currentMonthData = allExpenses.find(exp => exp.month === currentMonthIndex);
 
-    if (!currentMonthData || currentMonthData.data.every(exp => exp.amount === 0)) {
-        console.log("No expenses to display in Pie Chart");
+    console.log("Current Month Data for Pie Chart:", currentMonthData); // Debug
+
+    if (!currentMonthData || !currentMonthData.data) {
+        console.log("No data available for the current month. Initializing empty chart.");
+        if (expensePieChart) {
+            expensePieChart.destroy();
+        }
+        expensePieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: [],
+                datasets: [{
+                    data: [],
+                    backgroundColor: []
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    }
+                }
+            }
+        });
         return;
     }
 
     const labels = currentMonthData.data.map(exp => exp.name);
     const data = currentMonthData.data.map(exp => exp.amount);
+
+    console.log("Labels for Pie Chart:", labels); // Debug
+    console.log("Data for Pie Chart:", data); // Debug
 
     if (expensePieChart) {
         expensePieChart.destroy();
@@ -332,11 +429,15 @@ function renderExpenseChart() {
         },
         options: {
             plugins: {
-                legend: { display: true, position: 'top' }
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
             }
         }
     });
 }
+
 
 
 // Open modal for updating expense
@@ -388,20 +489,24 @@ function openUpdateModal(expense, index) {
 function updateExpense(index, updatedExpense) {
     const allExpenses = JSON.parse(localStorage.getItem('expenses')) || [];
 
-    // Find or initialize current month's data
+    // Find or initialize current month data
     let currentMonthData = allExpenses.find(exp => exp.month === currentMonthIndex);
     if (!currentMonthData) {
-        currentMonthData = { month: currentMonthIndex, data: [...defaultExpenses] };
+        currentMonthData = {
+            month: currentMonthIndex,
+            data: defaultExpenses.map(exp => ({ ...exp }))
+        };
         allExpenses.push(currentMonthData);
     }
 
     // Update the specific expense
     currentMonthData.data[index] = updatedExpense;
 
-    // Save back to local storage
+    // Save back to localStorage
     localStorage.setItem('expenses', JSON.stringify(allExpenses));
     displayCurrentMonth(); // Refresh UI
 }
+
 
 
 // Initialize the app
@@ -409,15 +514,18 @@ initializeMonthlyCalendar();
 
 
 
-document.getElementById('prev-month').addEventListener('click', function () {
+ddocument.getElementById('prev-month').addEventListener('click', function () {
+    console.log("Previous button clicked"); // Debugging log
     currentMonthIndex = (currentMonthIndex - 1 + 12) % 12;
     displayCurrentMonth();
 });
 
 document.getElementById('next-month').addEventListener('click', function () {
+    console.log("Next button clicked"); // Debugging log
     currentMonthIndex = (currentMonthIndex + 1) % 12;
     displayCurrentMonth();
 });
+
 
 
 
