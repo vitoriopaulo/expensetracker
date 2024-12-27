@@ -1,4 +1,4 @@
-// Reset local storage for testing
+/ Reset local storage for testing
 localStorage.removeItem('user');
 console.log("Local storage has been reset for testing.");
 
@@ -263,22 +263,12 @@ function displayCurrentMonth() {
     renderExpenseChart();
 }
 
-<<<<<<< HEAD
-function displayCurrentMonth() {
-    document.getElementById('current-month').textContent = months[currentMonthIndex];
-    displayExpenses();
-    displayBudget();
-    renderExpenseChart(); // Updates Pie Chart
-    updateLineChart();    // Updates Line Chart
-}
-=======
 
 
 
 
 
 
->>>>>>> dev
 
 
 // Function to display the budget
@@ -459,20 +449,7 @@ function renderExpenseChart() {
             plugins: {
                 legend: {
                     display: true,
-                    position: 'top',
-                    labels: {
-                        color: '#D3D3D3', // Light gray text for legend
-                        font: {
-                            size: 14
-                        }
-                    }
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function (context) {
-                            return `$${context.raw.toFixed(2)}`;
-                        }
-                    }
+                    position: 'top'
                 }
             }
         }
@@ -481,95 +458,6 @@ function renderExpenseChart() {
 
 
 
-<<<<<<< HEAD
-function renderLineChart(labels, data) {
-    const ctx = document.getElementById('expense-line-chart').getContext('2d');
-    const expenseLineChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels, // X-axis labels (Months)
-            datasets: [{
-                label: 'Monthly Expenses',
-                data: data, // Y-axis data
-                borderColor: '#36A2EB',
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                tension: 0.4, // Smooth curve
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'top',
-                    labels: {
-                        color: '#D3D3D3', // Light gray text for legend
-                    }
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function (context) {
-                            return `$${context.raw.toFixed(2)}`;
-                        }
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Months',
-                        color: '#D3D3D3' // Light gray text for X-axis title
-                    },
-                    ticks: {
-                        color: '#D3D3D3' // Light gray text for X-axis tick labels
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Total Expense ($)',
-                        color: '#D3D3D3' // Light gray text for Y-axis title
-                    },
-                    ticks: {
-                        color: '#D3D3D3', // Light gray text for Y-axis tick labels
-                    },
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-
-    console.log("Line Chart Rendered", labels, data); // Debugging log
-}
-
-
-
-function updateLineChart() {
-    const expenses = JSON.parse(localStorage.getItem('expenses')) || [];
-    const monthlyTotals = Array(12).fill(0); // Initialize totals for 12 months
-
-    expenses.forEach(expense => {
-        if (expense && expense.month >= 0 && expense.month < 12) {
-            monthlyTotals[expense.month] += expense.amount;
-        }
-    });
-
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    renderLineChart(months, monthlyTotals);
-}
-
-
-
-
-
-
-
-
-
-=======
->>>>>>> dev
 // Open modal for updating expense
 function openUpdateModal(expense, index) {
     const modal = document.getElementById('update-modal');
