@@ -323,31 +323,54 @@ footer p {
     background-color: #b3c300; /* Change to greenish-yellow on hover */
 }
 
+#/* General styles for the chart section */
 #charts-section {
     margin-top: 20px;
     padding: 15px;
-    background-color: #000;
+    background-color: #000; /* Black background for contrast */
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-    color: #b3c300;
+    color: #b3c300; /* Consistent neon text color */
     text-align: center;
+    display: flex; /* Ensure alignment */
+    flex-direction: column; /* Stack children vertically */
+    align-items: center; /* Center the chart and legend horizontally */
 }
+
+canvas {
+    max-width: 95%; /* Ensure the chart scales within its container */
+    max-height: 400px; /* Set a reasonable maximum height */
+    margin: 0 auto; /* Center the chart */
+}
+
 
 /* Legend Customization */
-.chart-legend {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 15px;
+/* Center the pie chart and scale it for responsiveness */
+/* Pie chart specific adjustments */
+#expense-pie-chart {
+    max-width: 80%; /* Adjust chart width to scale dynamically */
+    height: auto; /* Maintain aspect ratio */
+    margin-bottom: 20px; /* Add space below the chart */
 }
 
+/* Legend styling */
+.chart-legend {
+    margin-top: 20px; /* Add space above the legend */
+    display: flex;
+    flex-wrap: wrap; /* Allow legend items to wrap neatly */
+    justify-content: center; /* Center the legend items */
+    gap: 15px; /* Space between legend items */
+    color: #ffffff; /* Improve contrast for readability */
+    font-size: 14px; /* Adjust legend text size */
+}
+
+
 .chart-legend-item {
+    color: #ffffff; /* Light-grey for better readability */
+    font-size: 14px;
     display: flex;
     align-items: center;
-    gap: 5px;
-    font-size: 14px;
-    color: #b3c300;
+    gap: 5px; /* Add spacing between icon and text */
 }
 
 .chart-legend-item .legend-color {
@@ -356,12 +379,14 @@ footer p {
     border-radius: 50%;
 }
 
-#expense-line-chart {
-    margin-top: 20px;
-    border-radius: 10px;
-    background-color: #000; /* Black background for consistent theme */
-    padding: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+/* Adjust spacing below the chart */
+#charts-section {
+    margin-bottom: 10px; /* Reduce space below the chart */
+}
+
+/* Reduce space between chart section and Save button */
+#save-expenses {
+    margin-top: 15px; /* Ensure a consistent and minimal gap */
 }
 
 /* Budget Progress Bar Styles */
