@@ -38,6 +38,19 @@ let monthlyBudget = 0;
 let expensePieChart;
 
 
+function getCurrentMonthExpenses() {
+    const allExpenses = JSON.parse(localStorage.getItem('expenses')) || [];
+    const currentMonthData = allExpenses.find(exp => exp.month === currentMonthIndex);
+
+    // Debugging log to ensure correct data fetching
+    console.log("Fetching current month's expenses:", currentMonthData);
+
+    return currentMonthData ? currentMonthData.data : [];
+}
+
+
+
+
 
 function initializeMonthlyCalendar() {
     displayCurrentMonth();
@@ -190,6 +203,37 @@ document.getElementById('logout-button').addEventListener('click', function () {
 
 
 
+document.getElementById('export-button').addEventListener('click', () => {
+    console.log("Export button clicked");
+
+    const modal = document.getElementById('export-modal');
+    if (modal) {
+        modal.style.display = 'block';
+        console.log("Export modal opened"); // Debugging log
+    } else {
+        console.error("Export modal not found!");
+    }
+});
+
+
+
+
+
+// Close modal when X is clicked
+document.querySelector('#export-modal .close').addEventListener('click', () => {
+    document.getElementById('export-modal').style.display = 'none';
+});
+
+// Close modal when clicking outside of it
+window.addEventListener('click', (event) => {
+    if (event.target === document.getElementById('export-modal')) {
+        document.getElementById('export-modal').style.display = 'none';
+    }
+});
+
+
+
+
 
 
 // Function to show feedback popup with progress bar
@@ -215,6 +259,10 @@ function showFeedbackPopup(message) {
         }, 500);
     }, 4000);
 }
+
+
+
+
 
 
 // Function to reset the Sign Up form
@@ -253,32 +301,17 @@ document.getElementById('next-month').addEventListener('click', function () {
 
 // Function to display the current month
 function displayCurrentMonth() {
-    // Ensure the calendar shows the current month
     document.getElementById('current-month').textContent = months[currentMonthIndex];
+    console.log("Displaying current month:", months[currentMonthIndex]); // Debug log
 
-    // Fetch and display the current month's expenses
     displayExpenses();
-
-    // Optionally render any related charts
     renderExpenseChart();
 }
 
-<<<<<<< HEAD
-function displayCurrentMonth() {
-    document.getElementById('current-month').textContent = months[currentMonthIndex];
-    displayExpenses();
-    displayBudget();
-    renderExpenseChart(); // Updates Pie Chart
-    updateLineChart();    // Updates Line Chart
-}
-=======
 
 
 
 
-
-
->>>>>>> dev
 
 
 // Function to display the budget
@@ -323,12 +356,15 @@ window.addEventListener('click', function (event) {
 
 // Function to display expenses
 function displayExpenses() {
-    const allExpenses = JSON.parse(localStorage.getItem('expenses')) || [];
-    const currentMonthData = allExpenses.find(exp => exp.month === currentMonthIndex);
+    const currentMonthExpenses = getCurrentMonthExpenses();
 
-    const currentMonthExpenses = currentMonthData
-        ? currentMonthData.data
-        : defaultExpenses.map(exp => ({ ...exp, month: currentMonthIndex }));
+    // Debug log to ensure current month expenses are fetched
+    console.log("Displaying expenses for current month:", currentMonthExpenses);
+
+    if (!currentMonthExpenses || currentMonthExpenses.length === 0) {
+        console.warn("No expenses available to display."); // Warning log
+        return;
+    }
 
     const expenseList = document.getElementById('expense-list');
     expenseList.innerHTML = '';
@@ -336,130 +372,404 @@ function displayExpenses() {
     currentMonthExpenses.forEach((expense, index) => {
         const li = document.createElement('li');
         li.textContent = `${expense.name}: `;
-
         const amountSpan = document.createElement('span');
         amountSpan.textContent = `$${expense.amount.toFixed(2)}`;
         li.appendChild(amountSpan);
 
         const triangle = document.createElement('div');
         triangle.className = 'triangle';
-        triangle.onclick = function () {
-            openUpdateModal(expense, index);
-        };
+        triangle.onclick = () => openUpdateModal(expense, index);
         li.appendChild(triangle);
 
         expenseList.appendChild(li);
     });
 
-    const totalAmount = currentMonthExpenses.reduce((total, expense) => total + expense.amount, 0);
-    document.getElementById('total-amount').textContent = `Total Amount: $${totalAmount.toFixed(2)}`;
-}
-
-    // Update total amount
-    const totalAmount = currentMonthExpenses.reduce((total, expense) => total + expense.amount, 0);
-    document.getElementById('total-amount').textContent = `Total Amount: $${totalAmount.toFixed(2)}`;
-function displayExpenses() {
-    const allExpenses = JSON.parse(localStorage.getItem('expenses')) || [];
-    let currentMonthData = allExpenses.find(exp => exp.month === currentMonthIndex);
-
-    // If no data for the current month, initialize with default expenses
-    if (!currentMonthData) {
-        currentMonthData = {
-            month: currentMonthIndex,
-            data: defaultExpenses.map(exp => ({ ...exp }))
-        };
-        allExpenses.push(currentMonthData);
-        localStorage.setItem('expenses', JSON.stringify(allExpenses));
-    }
-
-    const expenseList = document.getElementById('expense-list');
-    expenseList.innerHTML = ''; // Clear the current list
-
-    currentMonthData.data.forEach((expense, index) => {
-        const li = document.createElement('li');
-        li.textContent = `${expense.name}: `;
-
-        const amountSpan = document.createElement('span');
-        amountSpan.textContent = `$${expense.amount.toFixed(2)}`;
-        li.appendChild(amountSpan);
-
-        const triangle = document.createElement('div');
-        triangle.className = 'triangle';
-        triangle.onclick = function () {
-            openUpdateModal(expense, index);
-        };
-        li.appendChild(triangle);
-
-        expenseList.appendChild(li);
-    });
-
-    // Update total amount
-    const totalAmount = currentMonthData.data.reduce((total, expense) => total + expense.amount, 0);
+    const totalAmount = currentMonthExpenses.reduce((sum, expense) => sum + expense.amount, 0);
+    console.log("Total amount calculated:", totalAmount); // Debug log
     document.getElementById('total-amount').textContent = `Total Amount: $${totalAmount.toFixed(2)}`;
 }
 
 
 
-function renderExpenseChart() {
-    const ctx = document.getElementById('expense-pie-chart').getContext('2d');
-
-    // Retrieve all expenses from localStorage
-    const allExpenses = JSON.parse(localStorage.getItem('expenses')) || [];
+    // Update total amount
+    const currentMonthExpenses = getCurrentMonthExpenses();
+    const totalAmount = currentMonthExpenses.reduce((total, expense) => total + expense.amount, 0);
+    document.getElementById('total-amount').textContent = `Total Amount: $${totalAmount.toFixed(2)}`;
+    function displayExpenses() {
+        const allExpenses = JSON.parse(localStorage.getItem('expenses')) || [];
+        let currentMonthData = allExpenses.find(exp => exp.month === currentMonthIndex);
     
-    // Filter the expenses for the current month
-    const currentMonthData = allExpenses.find(exp => exp.month === currentMonthIndex);
-    const currentMonthExpenses = currentMonthData
-        ? currentMonthData.data // If data exists for the current month
-        : defaultExpenses.map(exp => ({ ...exp, month: currentMonthIndex })); // Fallback to default expenses
+        // Initialize current month data if not found
+        if (!currentMonthData) {
+            currentMonthData = {
+                month: currentMonthIndex,
+                data: defaultExpenses.map(exp => ({ ...exp })),
+            };
+            allExpenses.push(currentMonthData);
+            localStorage.setItem('expenses', JSON.stringify(allExpenses));
+        }
+    
+        const expenseList = document.getElementById('expense-list');
+        expenseList.innerHTML = ''; // Clear the list
+    
+        currentMonthData.data.forEach((expense, index) => {
+            const li = document.createElement('li');
+            li.textContent = `${expense.name}: `;
+    
+            const amountSpan = document.createElement('span');
+            amountSpan.textContent = `$${expense.amount.toFixed(2)}`;
+            li.appendChild(amountSpan);
+    
+            const triangle = document.createElement('div');
+            triangle.className = 'triangle';
+            triangle.onclick = () => openUpdateModal(expense, index);
+            li.appendChild(triangle);
+    
+            expenseList.appendChild(li);
+        });
+    
+        // Update total amount
+        const totalAmount = currentMonthData.data.reduce((total, expense) => total + expense.amount, 0);
+        document.getElementById('total-amount').textContent = `Total Amount: $${totalAmount.toFixed(2)}`;
+    }
+    
 
-    // Debugging: Ensure currentMonthExpenses is properly assigned
-    console.log("Rendering chart for currentMonthExpenses:", currentMonthExpenses);
 
-    // Extract labels and data for the pie chart
-    const labels = currentMonthExpenses.map(exp => exp.name);
-    const data = currentMonthExpenses.map(exp => exp.amount);
 
-    // Ensure the chart only renders when there is valid data
-    if (data.every(amount => amount === 0)) {
-        console.log("No expenses recorded for the current month. Chart not rendered.");
-        return;
+    document.getElementById('export-pdf').addEventListener('click', () => {
+        const currentMonthExpenses = getCurrentMonthExpenses();
+        if (!currentMonthExpenses || currentMonthExpenses.length === 0) {
+            console.error("No data available for export.");
+            showFeedbackPopup("No data to export for this month!");
+            return;
+        }
+    
+        const canvas = document.getElementById('expense-pie-chart');
+        const pdf = new jsPDF();
+        pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 15, 40, 180, 160);
+        pdf.save('expense-chart.pdf');
+        showFeedbackPopup("Pie Chart exported as PDF successfully!");
+        document.getElementById('export-modal').style.display = 'none';
+    });
+    
+    
+    
+
+    
+
+
+    
+    document.getElementById('export-csv').addEventListener('click', () => {
+        const currentMonthExpenses = getCurrentMonthExpenses();
+        if (!currentMonthExpenses || currentMonthExpenses.length === 0) {
+            console.error("No data available for export.");
+            showFeedbackPopup("No data to export for this month!");
+            return;
+        }
+    
+        const csvContent = "data:text/csv;charset=utf-8," +
+            currentMonthExpenses.map(e => `${e.name},${e.amount}`).join("\n");
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement('a');
+        link.setAttribute('href', encodedUri);
+        link.setAttribute('download', 'monthly-expenses.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    
+        showFeedbackPopup("Data exported as CSV successfully!");
+        document.getElementById('export-modal').style.display = 'none';
+    });
+    
+    
+    
+
+
+
+    
+    document.getElementById('export-ods').addEventListener('click', () => {
+        const currentMonthExpenses = getCurrentMonthExpenses();
+        if (!currentMonthExpenses || currentMonthExpenses.length === 0) {
+            console.error("No data available for export.");
+            showFeedbackPopup("No data to export for this month!");
+            return;
+        }
+    
+        const odsContent = `Name\tAmount\n` +
+            currentMonthExpenses.map(e => `${e.name}\t${e.amount}`).join("\n");
+        const blob = new Blob([odsContent], { type: 'application/vnd.oasis.opendocument.spreadsheet' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'monthly-expenses.ods';
+        link.click();
+    
+        showFeedbackPopup("Data exported as ODS successfully!");
+        document.getElementById('export-modal').style.display = 'none';
+    });    
+    
+    
+    document.getElementById('export-modal').style.display = 'none';
+
+
+
+
+
+
+    function exportData() {
+        const currentMonthData = expenses.find(exp => exp.month === currentMonthIndex);
+        if (!currentMonthData || !currentMonthData.data.length) {
+            console.error("No data available for export."); // Debugging log for missing data
+            showFeedbackPopup('No data to export for this month!'); 
+            return; // This is valid only inside a function
+        }
+    
+        // Proceed with data export logic here...
     }
 
-    // Destroy previous chart instance to avoid overlap
-    if (expensePieChart) {
-        expensePieChart.destroy();
-    }
+    
+    
 
-    // Render new pie chart
-    expensePieChart = new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels: labels,
-            datasets: [{
-                data: data,
-                backgroundColor: [
-                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#FF6347'
-                ]
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'top',
-                    labels: {
-                        color: '#ffffff', // Better contrast for legend text
-                        font: {
-                            size: 14
-                        }
+
+
+    function renderExpenseChart() {
+        const ctx = document.getElementById('expense-pie-chart').getContext('2d');
+        const currentMonthExpenses = getCurrentMonthExpenses();
+    
+        // Debug log for chart data
+        console.log("Rendering chart for current month expenses:", currentMonthExpenses);
+    
+        if (!currentMonthExpenses || currentMonthExpenses.every(exp => exp.amount === 0)) {
+            console.warn("No valid data to render chart."); // Warning log
+            return;
+        }
+    
+        const labels = currentMonthExpenses.map(exp => exp.name);
+        const data = currentMonthExpenses.map(exp => exp.amount);
+    
+        console.log("Labels for Pie Chart:", labels); // Debug log
+        console.log("Data for Pie Chart:", data); // Debug log
+    
+        if (expensePieChart) {
+            expensePieChart.destroy();
+        }
+    
+        expensePieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels,
+                datasets: [{
+                    data,
+                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#FF6347']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
                     }
                 }
             }
-        }
-    });
+        });
+    }
+    
+    
+
+
+
+/// Export Data as CSV
+document.getElementById('export-csv').addEventListener('click', () => {
+    const currentMonthExpenses = getCurrentMonthExpenses();
+    console.log("Exporting to CSV. Current month expenses:", currentMonthExpenses); // Debug log
+
+    if (!currentMonthExpenses || currentMonthExpenses.length === 0) {
+        console.error("No data available for export."); // Error log
+        showFeedbackPopup("No data to export for this month!");
+        return;
+    }
+
+    const csvContent = "data:text/csv;charset=utf-8," +
+        currentMonthExpenses.map(e => `${e.name},${e.amount}`).join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', 'monthly-expenses.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    showFeedbackPopup("Data exported as CSV successfully!");
+    document.getElementById('export-modal').style.display = 'none';
+});
+
+
+// Export Data as ODS
+document.getElementById('export-ods').addEventListener('click', () => {
+    const currentMonthExpenses = getCurrentMonthExpenses();
+    console.log("Exporting to ODS. Current month expenses:", currentMonthExpenses); // Debug log
+
+    if (!currentMonthExpenses || currentMonthExpenses.length === 0) {
+        console.error("No data available for export."); // Error log
+        showFeedbackPopup("No data to export for this month!");
+        return;
+    }
+
+    const odsContent = `Name\tAmount\n` +
+        currentMonthExpenses.map(e => `${e.name}\t${e.amount}`).join("\n");
+    const blob = new Blob([odsContent], { type: 'application/vnd.oasis.opendocument.spreadsheet' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'monthly-expenses.ods';
+    link.click();
+
+    showFeedbackPopup("Data exported as ODS successfully!");
+    document.getElementById('export-modal').style.display = 'none';
+});
+
+
+// Export Pie Chart as PDF
+document.getElementById('export-pdf').addEventListener('click', () => {
+    const currentMonthExpenses = getCurrentMonthExpenses();
+    console.log("Exporting to PDF. Current month expenses:", currentMonthExpenses); // Debug log
+
+    if (!currentMonthExpenses || currentMonthExpenses.length === 0) {
+        console.error("No data available for export."); // Error log
+        showFeedbackPopup("No data to export for this month!");
+        return;
+    }
+
+    const canvas = document.getElementById('expense-pie-chart');
+    const pdf = new jsPDF();
+    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 15, 40, 180, 160);
+    pdf.save('expense-chart.pdf');
+    showFeedbackPopup("Pie Chart exported as PDF successfully!");
+    document.getElementById('export-modal').style.display = 'none';
+});
+
+
+
+
+
+
+document.getElementById('export-pdf').addEventListener('click', () => {
+    console.log("Export PDF button clicked."); // Debugging log
+    exportPieChartAsPDF();
+});
+
+
+document.getElementById('export-csv').addEventListener('click', () => {
+    console.log("Export CSV button clicked."); // Debugging log
+    exportDataAsCSV();
+});
+
+document.getElementById('export-ods').addEventListener('click', () => {
+    console.log("Export ODS button clicked."); // Debugging log
+    exportDataAsODS();
+});
+
+
+
+
+
+
+function exportPieChartAsPDF() {
+    // Ensure the canvas element exists
+    const canvas = document.getElementById('expense-pie-chart');
+    if (!canvas) {
+        console.error("Pie chart canvas not found."); // Debugging log
+        showFeedbackPopup("Pie chart not found. Cannot export as PDF.");
+        return;
+    }
+
+    // Import jsPDF if necessary (in case it's not globally available)
+    const { jsPDF } = window.jspdf;
+    if (!jsPDF) {
+        console.error("jsPDF library is not loaded."); // Debugging log
+        showFeedbackPopup("Failed to load PDF library. Please try again.");
+        return;
+    }
+
+    // Generate PDF
+    const pdf = new jsPDF();
+    const imgData = canvas.toDataURL('image/png');
+    pdf.addImage(imgData, 'PNG', 15, 40, 180, 160);
+    pdf.save('expense-chart.pdf');
+
+    // Feedback for successful export
+    showFeedbackPopup("Pie Chart exported as PDF successfully!");
+    document.getElementById('export-modal').style.display = 'none';
 }
+
+
+
+
+
+
+function exportDataAsCSV() {
+    const currentMonthExpenses = getCurrentMonthExpenses();
+
+    console.log("Exporting data as CSV for current month:", currentMonthExpenses); // Debugging log
+
+    if (!currentMonthExpenses || currentMonthExpenses.length === 0) {
+        console.error("No data available for export."); // Debugging log
+        showFeedbackPopup("No data to export for this month!");
+        return;
+    }
+
+    const csvContent = "data:text/csv;charset=utf-8," +
+        currentMonthExpenses.map(exp => `${exp.name},${exp.amount}`).join("\n");
+
+    console.log("CSV Content:", csvContent); // Debugging log
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', 'monthly-expenses.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    showFeedbackPopup("Data exported as CSV successfully!");
+    console.log("Data exported as CSV."); // Debugging log
+}
+
+
+
+
+
+
+
+function exportDataAsODS() {
+    const currentMonthExpenses = getCurrentMonthExpenses();
+
+    console.log("Exporting data as ODS for current month:", currentMonthExpenses); // Debugging log
+
+    if (!currentMonthExpenses || currentMonthExpenses.length === 0) {
+        console.error("No data available for export."); // Debugging log
+        showFeedbackPopup("No data to export for this month!");
+        return;
+    }
+
+    const odsContent = `Name\tAmount\n` +
+        currentMonthExpenses.map(exp => `${exp.name}\t${exp.amount}`).join("\n");
+
+    console.log("ODS Content:", odsContent); // Debugging log
+
+    const blob = new Blob([odsContent], { type: 'application/vnd.oasis.opendocument.spreadsheet' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'monthly-expenses.ods';
+    link.click();
+
+    showFeedbackPopup("Data exported as ODS successfully!");
+    console.log("Data exported as ODS."); // Debugging log
+}
+
+
+
+
+
 
 
 
@@ -489,87 +799,7 @@ function renderExpenseChart() {
             plugins: {
                 legend: {
                     display: true,
-<<<<<<< HEAD
-                    position: 'top',
-                    labels: {
-                        color: '#D3D3D3', // Light gray text for legend
-                        font: {
-                            size: 14
-                        }
-                    }
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function (context) {
-                            return `$${context.raw.toFixed(2)}`;
-                        }
-                    }
-                }
-            }
-        }
-    });
-}
-
-
-
-<<<<<<< HEAD
-function renderLineChart(labels, data) {
-    const ctx = document.getElementById('expense-line-chart').getContext('2d');
-    const expenseLineChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels, // X-axis labels (Months)
-            datasets: [{
-                label: 'Monthly Expenses',
-                data: data, // Y-axis data
-                borderColor: '#36A2EB',
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                tension: 0.4, // Smooth curve
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'top',
-                    labels: {
-                        color: '#D3D3D3', // Light gray text for legend
-                    }
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function (context) {
-                            return `$${context.raw.toFixed(2)}`;
-                        }
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Months',
-                        color: '#D3D3D3' // Light gray text for X-axis title
-                    },
-                    ticks: {
-                        color: '#D3D3D3' // Light gray text for X-axis tick labels
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Total Expense ($)',
-                        color: '#D3D3D3' // Light gray text for Y-axis title
-                    },
-                    ticks: {
-                        color: '#D3D3D3', // Light gray text for Y-axis tick labels
-                    },
-                    beginAtZero: true
-=======
                     position: 'top'
->>>>>>> dev
                 }
             }
         }
@@ -578,33 +808,6 @@ function renderLineChart(labels, data) {
 
 
 
-<<<<<<< HEAD
-function updateLineChart() {
-    const expenses = JSON.parse(localStorage.getItem('expenses')) || [];
-    const monthlyTotals = Array(12).fill(0); // Initialize totals for 12 months
-
-    expenses.forEach(expense => {
-        if (expense && expense.month >= 0 && expense.month < 12) {
-            monthlyTotals[expense.month] += expense.amount;
-        }
-    });
-
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    renderLineChart(months, monthlyTotals);
-}
-
-
-
-
-
-
-
-
-
-=======
->>>>>>> dev
-=======
->>>>>>> dev
 // Open modal for updating expense
 function openUpdateModal(expense, index) {
     const modal = document.getElementById('update-modal');
@@ -674,20 +877,45 @@ function updateExpense(index, updatedExpense) {
 
 
 
+
+document.getElementById('export-button').addEventListener('click', () => {
+    const modal = document.getElementById('export-modal');
+    modal.style.display = 'block';
+    console.log("Export modal opened"); // Debug
+});
+
+// Close modal
+document.querySelector('#export-modal .close').addEventListener('click', () => {
+    document.getElementById('export-modal').style.display = 'none';
+});
+
+window.addEventListener('click', (event) => {
+    if (event.target === document.getElementById('export-modal')) {
+        document.getElementById('export-modal').style.display = 'none';
+    }
+});
+
+
+
+
+
 // Initialize the app
 initializeMonthlyCalendar();
 
 
 
-document.getElementById('prev-month').addEventListener('click', function () {
-    currentMonthIndex = (currentMonthIndex - 1 + 12) % 12; // Go to previous month
-    displayCurrentMonth(); // Update the display
+document.getElementById('prev-month').addEventListener('click', () => {
+    currentMonthIndex = (currentMonthIndex - 1 + 12) % 12;
+    displayCurrentMonth();
+    console.log("Previous month displayed:", months[currentMonthIndex]);
 });
 
-document.getElementById('next-month').addEventListener('click', function () {
-    currentMonthIndex = (currentMonthIndex + 1) % 12; // Go to next month
-    displayCurrentMonth(); // Update the display
+document.getElementById('next-month').addEventListener('click', () => {
+    currentMonthIndex = (currentMonthIndex + 1) % 12;
+    displayCurrentMonth();
+    console.log("Next month displayed:", months[currentMonthIndex]);
 });
+
 
 
 
@@ -696,9 +924,11 @@ document.getElementById('next-month').addEventListener('click', function () {
 function initializeApp() {
     if (!localStorage.getItem('expenses')) {
         localStorage.setItem('expenses', JSON.stringify([]));
+        console.log("Expenses initialized in local storage."); // Debug log
     }
+
+    // Debug log to confirm initialization
+    console.log("Initializing app...");
     initializeMonthlyCalendar();
 }
 initializeApp();
-
-
