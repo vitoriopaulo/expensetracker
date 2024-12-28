@@ -408,6 +408,56 @@ canvas {
 }
 
 
+
+/* Export Modal Styles */
+#export-modal .modal-content {
+    background-color: #222;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 300px;
+    border-radius: 8px;
+}
+
+#export-modal .expense-button {
+    margin-top: 10px;
+    width: 100%;
+    text-align: center;
+}
+
+/* Feedback Pop-up Styles (Reusing existing design) */
+.feedback-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #b3c300;
+    color: #1a1a1a;
+    padding: 1rem;
+    border-radius: 4px;
+    font-family: 'Raleway', sans-serif;
+    font-size: 1rem;
+    z-index: 1000;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+
+
+#chart-heading {
+    color: #b3c300;
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+}
+
+
+
+
+
+
+
 @media (max-width: 480px) {
     h1 {
         font-size: 1.25rem;

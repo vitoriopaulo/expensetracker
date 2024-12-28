@@ -79,6 +79,10 @@
                 <canvas id="expense-pie-chart" width="400" height="400"></canvas>
                 <div id="chart-legend" class="chart-legend"></div> <!-- Custom legend -->
             </div>
+
+
+            <!-- Export Button -->
+<button id="export-button" class="expense-button" aria-label="Export Data">Export</button>
         
             <!-- Save Button -->
             <button type="button" id="save-expenses" class="expense-button" aria-label="Save Expenses">Save</button>
@@ -136,6 +140,19 @@
         <a href="https://www.youtube.com/user/vitoriopaulo" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
         <a href="https://www.github.com/vitoriopaulo" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
       </div>
+
+      <!-- Export Modal -->
+<div id="export-modal" class="modal" style="display: none;" aria-labelledby="export-modal-heading" role="dialog">
+    <div class="modal-content">
+        <span class="close" aria-label="Close Modal">&times;</span>
+        <h2 id="export-modal-heading">Export Options</h2>
+        <div class="input-container">
+            <button id="export-pdf" class="expense-button" aria-label="Export Pie Chart as PDF">Export Pie Chart as PDF</button>
+            <button id="export-csv" class="expense-button" aria-label="Export Data as CSV">Export Data as CSV</button>
+            <button id="export-ods" class="expense-button" aria-label="Export Data as ODS">Export Data as ODS</button>
+        </div>
+    </div>
+</div>
 
     <script src="script.js"></script>
 </body>
