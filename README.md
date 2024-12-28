@@ -26,7 +26,7 @@ You're free to use it at [Expense Tracker](https://vitoriopaulo.github.io/expens
 To use the Expense Tracker app locally, you can clone the repository using the following command:
 
 ```bash
-git clone https://github.com/VitorioPaulo/expensetracker-app-project.git
+git clone https://github.com/VitorioPaulo/expensetracker.git
 
 ## License
 
